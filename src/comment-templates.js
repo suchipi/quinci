@@ -8,7 +8,7 @@ module.exports = {
       "<details>\n" +
       "<summary>Log output:</summary>\n" +
       "\n``````\n" +
-      output +
+      output.trim() +
       "\n``````\n" +
       "</details>"
     );
@@ -19,7 +19,7 @@ module.exports = {
       "<details>\n" +
       "<summary>Log output:</summary>\n" +
       "\n``````\n" +
-      output +
+      output.trim() +
       "\n``````\n" +
       "</details>"
     );
@@ -29,7 +29,7 @@ module.exports = {
       `❌ QuinCI run of job '${jobName}' errored.\n` +
       "Error:\n" +
       "\n``````\n" +
-      error.toString() +
+      error.toString().trim() +
       "\n``````\n"
     );
   },
