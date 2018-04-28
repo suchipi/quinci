@@ -1,0 +1,4 @@
+node_modules
+secrets
+jobs
+yarn-error.log
