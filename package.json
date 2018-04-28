@@ -1,6 +1,6 @@
 {
-  "name": "dumb-ci",
-  "version": "1.0.0",
+  "name": "quinci",
+  "version": "0.1.0",
   "bin": "cli.js",
   "main": "index.js",
   "license": "MIT",
@@ -20,6 +20,6 @@
     "prettier": "^1.12.1"
   },
   "scripts": {
-    "start": "nodemon src/cli.js -- --app-id 11571 --app-cert secrets/dumb-ci.private-key.pem --webhook-secret-file secrets/webhook-secret.txt"
+    "start": "nodemon src/cli.js -- --app-id 11578 --app-cert secrets/quinci-mac-at-home.private-key.pem --webhook-secret-file secrets/webhook-secret.txt"
   }
 }

@@ -5,8 +5,8 @@ module.exports = {
       repo,
       sha,
       state: "pending",
-      description: `Dumb CI - Running '${jobName}'`,
-      context: `dumb-ci:${jobName}`
+      description: `QuinCI - Running '${jobName}'`,
+      context: `quinci:${jobName}`,
     });
   },
   success({ github, jobName, owner, repo, sha }) {
@@ -15,8 +15,8 @@ module.exports = {
       repo,
       sha,
       state: "success",
-      description: `Dumb CI - '${jobName}' ran successfully`,
-      context: `dumb-ci:${jobName}`
+      description: `QuinCI - '${jobName}' ran successfully`,
+      context: `quinci:${jobName}`,
     });
   },
   failure({ github, jobName, owner, repo, sha }) {
@@ -25,8 +25,8 @@ module.exports = {
       repo,
       sha,
       state: "failure",
-      description: `Dumb CI - '${jobName}' failed`,
-      context: `dumb-ci:${jobName}`
+      description: `QuinCI - '${jobName}' failed`,
+      context: `quinci:${jobName}`,
     });
   },
   error({ github, jobName, owner, repo, sha }) {
@@ -35,8 +35,8 @@ module.exports = {
       repo,
       sha,
       state: "error",
-      description: `Dumb CI - '${jobName}' errored`,
-      context: `dumb-ci:${jobName}`
+      description: `QuinCI - '${jobName}' errored`,
+      context: `quinci:${jobName}`,
     });
-  }
+  },
 };

@@ -28,7 +28,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
         jobName,
         owner,
         repo,
-        sha
+        sha,
       });
 
       log("Posting pending comment");
@@ -36,14 +36,14 @@ module.exports = function setupEvent(handler, app, makeLogger) {
         owner,
         repo,
         number,
-        body: commentTemplates.running(jobName)
+        body: commentTemplates.running(jobName),
       });
 
       log(`Running job '${jobName}'`);
       const { code, output } = await runJob({
         jobName,
         commitSha: sha,
-        remote: payload.repository.ssh_url
+        remote: payload.repository.ssh_url,
       });
       log(`Job '${jobName}' finished with status code ${code}`);
 
@@ -54,7 +54,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
           jobName,
           owner,
           repo,
-          sha
+          sha,
         });
 
         log("Posting success comment");
@@ -62,7 +62,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
           owner,
           repo,
           number: payload.number,
-          body: commentTemplates.success(jobName, output)
+          body: commentTemplates.success(jobName, output),
         });
       } else {
         log("Setting status to failure");
@@ -71,7 +71,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
           jobName,
           owner,
           repo,
-          sha
+          sha,
         });
 
         log("Posting failure comment");
@@ -79,7 +79,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
           owner,
           repo,
           number: payload.number,
-          body: commentTemplates.failure(jobName, output, code)
+          body: commentTemplates.failure(jobName, output, code),
         });
       }
     } catch (error) {
@@ -91,7 +91,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
           jobName,
           owner,
           repo,
-          sha
+          sha,
         });
 
         await log("Posting error comment");
@@ -99,7 +99,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
           owner,
           repo,
           number: payload.number,
-          body: commentTemplates.error(jobName, error)
+          body: commentTemplates.error(jobName, error),
         });
       }
     }

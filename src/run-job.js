@@ -5,22 +5,22 @@ module.exports = function runJob({ remote, commitSha, jobName }) {
   const now = Date.now();
   const jobDir = `jobs/${jobName}/${now}`;
   const runDir = `${jobDir}/${commitSha}`;
-  const logFile = `${runDir}/dumb-ci-log.txt`;
+  const logFile = `${runDir}/quinci-log.txt`;
 
   shell.mkdir("-p", runDir);
   const child = spawn(
     "sh",
     [
       "-c",
-      `git clone --quiet ${remote} ${commitSha} && cd ${commitSha} && git checkout --quiet ${commitSha} && ./dumb-ci/${jobName}`,
+      `git clone --quiet ${remote} ${commitSha} && cd ${commitSha} && git checkout --quiet ${commitSha} && ./quinci/${jobName}`,
     ],
     {
       cwd: jobDir,
       env: Object.assign({}, process.env, {
         CI: "true",
-        DUMB_CI_REMOTE: remote,
-        DUMB_CI_JOB_NAME: jobName,
-        DUMB_CI_COMMIT_SHA: commitSha,
+        QUINCI_REMOTE: remote,
+        QUINCI_JOB_NAME: jobName,
+        QUINCI_COMMIT_SHA: commitSha,
       }),
     }
   );

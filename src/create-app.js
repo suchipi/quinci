@@ -5,7 +5,7 @@ const githubApp = require("github-app");
 module.exports = function createApp(config) {
   const app = githubApp({
     id: config.appId,
-    cert: fs.readFileSync(path.resolve(process.cwd(), config.appCert))
+    cert: fs.readFileSync(path.resolve(process.cwd(), config.appCert)),
   });
 
   return app;

@@ -12,14 +12,14 @@ module.exports = function createHandler(config) {
         path.resolve(process.cwd(), config.webhookSecretFile),
         "utf-8"
       )
-      .trim()
+      .trim(),
   });
 
   const eventFiles = fs.readdirSync(path.join(__dirname, "events"));
-  eventFiles.forEach(filename => {
+  eventFiles.forEach((filename) => {
     const setupEvent = require("./events/" + filename);
-    const debug = require("debug")("dumb-ci:" + path.basename(filename, ".js"));
-    const makeLogger = prefix => msg => debug(`${prefix}${msg}`);
+    const debug = require("debug")("quinci:" + path.basename(filename, ".js"));
+    const makeLogger = (prefix) => (msg) => debug(`${prefix}${msg}`);
     setupEvent(handler, app, makeLogger);
   });
 

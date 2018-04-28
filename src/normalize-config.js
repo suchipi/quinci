@@ -3,6 +3,6 @@ module.exports = function normalizeConfig(config) {
     appId: config.appId,
     appCert: config.appCert,
     webhookSecretFile: config.webhookSecretFile,
-    port: config.port
+    port: config.port,
   };
 };

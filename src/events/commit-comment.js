@@ -23,7 +23,9 @@ module.exports = function setupEvent(handler, app, makeLogger) {
         return;
       }
 
-      const matches = payload.comment.body.match(/dumb.*ci.*run ([\w.-]+)/i);
+      const matches = payload.comment.body.match(
+        /quin+c[eyi]+.* run ([\w.-]+)/i
+      );
       if (!matches) {
         log("Aborting because comment body did not request a CI run");
         return;
