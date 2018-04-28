@@ -1,7 +1,7 @@
 {
   "name": "quinci",
-  "version": "0.1.0",
-  "bin": "cli.js",
+  "version": "0.1.1",
+  "bin": "src/cli.js",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
