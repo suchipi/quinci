@@ -7,10 +7,12 @@ module.exports = function createHandler(config) {
   const app = createApp(config);
   const handler = githubWebhookHandler({
     path: "/",
-    secret: fs.readFileSync(
-      path.resolve(process.cwd(), config.webhookSecretFile),
-      "utf-8"
-    )
+    secret: fs
+      .readFileSync(
+        path.resolve(process.cwd(), config.webhookSecretFile),
+        "utf-8"
+      )
+      .trim()
   });
 
   const eventFiles = fs.readdirSync(path.join(__dirname, "events"));
