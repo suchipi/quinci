@@ -12,19 +12,25 @@ module.exports = function runJob({ remote, commitSha, jobName }) {
     "sh",
     [
       "-c",
-      `git clone ${remote} ${commitSha} && cd ${commitSha} && git checkout ${commitSha} && ./dumb-ci/${jobName}`
+      `git clone --quiet ${remote} ${commitSha} && cd ${commitSha} && git checkout --quiet ${commitSha} && ./dumb-ci/${jobName}`,
     ],
     {
-      cwd: jobDir
+      cwd: jobDir,
+      env: Object.assign({}, process.env, {
+        CI: "true",
+        DUMB_CI_REMOTE: remote,
+        DUMB_CI_JOB_NAME: jobName,
+        DUMB_CI_COMMIT_SHA: commitSha,
+      }),
     }
   );
   let output = "";
 
-  child.on("stdout", data => {
+  child.on("stdout", (data) => {
     output += data.toString("utf-8");
     shell.echo(data.toString("utf-8")).toEnd(logFile);
   });
-  child.on("stderr", data => {
+  child.on("stderr", (data) => {
     output += data.toString("utf-8");
     shell.echo(data.toString("utf-8")).toEnd(logFile);
   });
