@@ -77,7 +77,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
       const { code, output } = await runJob({
         jobName,
         commitSha: sha,
-        remote: payload.repository.ssh_url,
+        remote: prResponse.data.head.repo.ssh_url,
       });
       log(`Job '${jobName}' finished with status code ${code}`);
 

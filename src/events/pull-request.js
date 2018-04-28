@@ -22,7 +22,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
 
       github = await app.asInstallation(payload.installation.id);
 
-      const username = payload.pull_request.user.login;
+      const username = payload.sender.login;
       log(`Checking if ${username} has write access`);
       const authLevelResponse = await github.repos.reviewUserPermissionLevel({
         owner,
@@ -57,7 +57,7 @@ module.exports = function setupEvent(handler, app, makeLogger) {
       const { code, output } = await runJob({
         jobName,
         commitSha: sha,
-        remote: payload.repository.ssh_url,
+        remote: payload.pull_request.head.repo.ssh_url,
       });
       log(`Job '${jobName}' finished with status code ${code}`);
 
