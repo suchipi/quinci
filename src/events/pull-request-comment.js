@@ -16,6 +16,21 @@ module.exports = function setupEvent(handler, app, makeLogger) {
       log("Received a issue_comment event");
 
       github = await app.asInstallation(payload.installation.id);
+      const username = payload.comment.user.login;
+
+      log(`Checking if ${username} has write access`);
+      const authLevelResponse = await github.repos.reviewUserPermissionLevel({
+        owner,
+        repo,
+        username,
+      });
+
+      const permission = authLevelResponse.data.permission;
+      if (permission !== "admin" && permission !== "write") {
+        log("Aborting because user does not have write access");
+        return;
+      }
+
       const prResponse = await github.pullRequests.get({
         owner,
         repo,

@@ -22,6 +22,20 @@ module.exports = function setupEvent(handler, app, makeLogger) {
 
       github = await app.asInstallation(payload.installation.id);
 
+      const username = payload.pull_request.user.login;
+      log(`Checking if ${username} has write access`);
+      const authLevelResponse = await github.repos.reviewUserPermissionLevel({
+        owner,
+        repo,
+        username,
+      });
+
+      const permission = authLevelResponse.data.permission;
+      if (permission !== "admin" && permission !== "write") {
+        log("Aborting because user does not have write access");
+        return;
+      }
+
       log("Setting status to pending");
       await createStatus.running({
         github,
