@@ -142,7 +142,7 @@ QuinCI will post a comment when it starts running the job, and another comment w
 
 In any PR, you can leave a comment with the phrase "QuinCI run" or "QuinCI test", and QuinCI will re-run the `pull-request` job.
 
-The phrase only needs to match `/quin+c[eyi]+.* (?:run|test)/i`, so you can write "Mr. Quincy, please test the code again, if you wouldn't mind" and it will work, too.
+The phrase only needs to match `/quin+c[eyi]+.* (?:re)?(?:run|test)/i`, so you can write "Mr. Quincy, please test the code again, if you wouldn't mind" and it will work, too.
 
 | Event                                        | Job    |
 | -------------------------------------------- | ------ |
