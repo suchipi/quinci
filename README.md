@@ -156,6 +156,7 @@ You can also use this to run custom jobs; for example, if you create the file `q
 
 ## Troubleshooting
 
+* QuinCI will not run in response to actions from users who do not have write access to the repository, as a security measure. If a user without write access opens a PR and you want to run its tests, you can use the "comment with special phrase" trigger to run it.
 * QuinCI uses the [debug](https://www.npmjs.com/package/debug) module to log debugging information. To view debug logs while running, set the environment variable `DEBUG` to `quinci:*`.
 * QuinCI clones repos into directories created in the `jobs` directory relative to where `quinci` is run. If QuinCI is not behaving, you can `cd` into one of those directories to run the scripts yourself.
 * When running a job, QuinCI writes all log output to `quinci-log.txt` in the job folder.
