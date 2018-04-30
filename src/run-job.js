@@ -36,6 +36,7 @@ module.exports = function runJob({ remote, commitSha, jobName }) {
   });
 
   return child.then(({ code, stdout, stderr }) => {
+    shell.rm("-rf", jobDir);
     return { code, stdout, stderr, output };
   });
 };
