@@ -6,10 +6,15 @@ module.exports = function runQuinCI(config) {
 
   return new Promise((resolve) => {
     const server = http.createServer(function(req, res) {
-      handler(req, res, (err) => {
-        res.statusCode = 404;
-        res.end("404 Not Found");
-      });
+      try {
+        handler(req, res, (err) => {
+          res.statusCode = 400;
+          res.end("400 Bad Request");
+        });
+      } catch (err) {
+        res.statusCode = 400;
+        res.end("400 Bad Request");
+      }
     });
 
     server.listen(config.port, resolve);
