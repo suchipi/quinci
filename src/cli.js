@@ -4,16 +4,16 @@ const argv = require("yargs")
     describe: "Port to run the HTTP server on",
     default: 7777,
   })
-  .option("appId", {
+  .option("app-id", {
     describe: "GitHub App ID",
   })
-  .option("appCert", {
+  .option("app-cert", {
     describe: "Path to the GitHub App's private key pem file",
   })
-  .option("webhookSecretFile", {
+  .option("webhook-secret-file", {
     describe: "Path to a text file containing your Webhook secret",
   })
-  .demandOption(["port", "appId", "appCert", "webhookSecretFile"]).argv;
+  .demandOption(["port", "app-id", "app-cert", "webhook-secret-file"]).argv;
 
 const debug = require("debug")("quinci:cli");
 const normalizeConfig = require("./normalize-config");
