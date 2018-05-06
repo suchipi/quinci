@@ -1,10 +1,14 @@
+const stripAnsi = require("strip-ansi");
+
 const MAX_COMMENT_SIZE = 65536;
 
 module.exports = {
   running(jobName) {
     return `🕑 QuinCI is running '${jobName}'...\n`;
   },
-  success(jobName, output) {
+  success(jobName, rawOutput) {
+    const output = stripAnsi(rawOutput);
+
     const header =
       `✅ QuinCI run of job '${jobName}' passed.\n` +
       "<details>\n" +
@@ -19,7 +23,9 @@ module.exports = {
       footer
     );
   },
-  failure(jobName, output, code) {
+  failure(jobName, rawOutput, code) {
+    const output = stripAnsi(rawOutput);
+
     const header =
       `❌ QuinCI run of job '${jobName}' failed. Exit code was ${code}.\n` +
       "<details>\n" +

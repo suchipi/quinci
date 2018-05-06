@@ -10,6 +10,7 @@
     "github-webhook-handler": "^0.7.1",
     "shelljs": "^0.8.1",
     "spawndamnit": "^2.0.0",
+    "strip-ansi": "^4.0.0",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
