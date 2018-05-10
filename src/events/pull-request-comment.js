@@ -1,8 +1,10 @@
+/* @flow */
+import type { SetupEventFunction } from "../create-handler";
 const runJob = require("../run-job");
 const commentTemplates = require("../comment-templates");
 const createStatus = require("../create-status");
 
-module.exports = function setupEvent(handler, app, makeLogger) {
+module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
   handler.on("issue_comment", async ({ payload }) => {
     const [owner, repo] = payload.repository.full_name.split("/");
     const number = payload.issue.number;
@@ -56,28 +58,57 @@ module.exports = function setupEvent(handler, app, makeLogger) {
         return;
       }
 
-      log("Setting status to pending");
-      await createStatus.running({
-        github,
-        jobName,
-        owner,
-        repo,
-        sha,
-      });
+      const queue = queues.getQueueForJobName(jobName);
+      log(`Queue concurrency for '${jobName}' is ${queue.getConcurrency()}.`);
+      log(
+        `There are ${queue.getRunning()} job(s) running in the '${jobName}' queue.`
+      );
+      log(
+        `There are ${queue.getWaiting()} job(s) waiting in the '${jobName}' queue.`
+      );
 
-      log("Posting pending comment");
-      await github.issues.createComment({
-        owner,
-        repo,
-        number,
-        body: commentTemplates.running(jobName),
-      });
+      if (!queue.canRunNow()) {
+        log("Setting status to waiting");
+        await createStatus.waiting({
+          github,
+          jobName,
+          owner,
+          repo,
+          sha,
+        });
 
-      log(`Running job '${jobName}'`);
-      const { code, output } = await runJob({
-        jobName,
-        commitSha: sha,
-        remote: prResponse.data.head.repo.ssh_url,
+        log("Posting waiting comment");
+        await github.issues.createComment({
+          owner,
+          repo,
+          number,
+          body: commentTemplates.waiting(jobName),
+        });
+      }
+
+      const { code, output } = await queue.add(async () => {
+        log(`Running job '${jobName}'`);
+        log("Setting status to running");
+        await createStatus.running({
+          github,
+          jobName,
+          owner,
+          repo,
+          sha,
+        });
+
+        log("Posting running comment");
+        await github.issues.createComment({
+          owner,
+          repo,
+          number,
+          body: commentTemplates.running(jobName),
+        });
+        return runJob({
+          jobName,
+          commitSha: sha,
+          remote: prResponse.data.head.repo.ssh_url,
+        });
       });
       log(`Job '${jobName}' finished with status code ${code}`);
 
@@ -138,4 +169,4 @@ module.exports = function setupEvent(handler, app, makeLogger) {
       }
     }
   });
-};
+}: SetupEventFunction);

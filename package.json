@@ -1,26 +1,36 @@
 {
   "name": "quinci",
   "version": "0.3.3",
-  "bin": "src/cli.js",
-  "main": "src/index.js",
+  "bin": "dist/cli.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
     "debug": "^3.1.0",
     "github-app": "^3.2.0",
     "github-webhook-handler": "^0.7.1",
+    "promise-queue": "^2.2.5",
     "shelljs": "^0.8.1",
     "spawndamnit": "^2.0.0",
     "strip-ansi": "^4.0.0",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.46",
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.46",
+    "babel-eslint": "^8.2.3",
+    "concurrently": "^3.5.1",
     "eslint": "^4.19.1",
     "eslint-config-unobtrusive": "^1.2.2",
+    "eslint-plugin-flowtype": "^2.46.3",
     "eslint-plugin-import": "^2.11.0",
+    "flow-bin": "^0.72.0",
     "nodemon": "^1.17.3",
-    "prettier": "^1.12.1"
+    "prettier": "^1.12.1",
+    "rimraf": "^2.6.2"
   },
   "scripts": {
-    "start": "nodemon src/cli.js -- --app-id 11578 --app-cert secrets/quinci-mac-at-home.private-key.pem --webhook-secret-file secrets/webhook-secret.txt"
+    "build": "rimraf dist/* && babel src --out-dir dist",
+    "start": "rimraf dist/* && concurrently 'babel --watch src --out-dir dist' 'nodemon --watch dist dist/cli.js -- --app-id 11578 --app-cert secrets/quinci-mac-at-home.private-key.pem --webhook-secret-file secrets/webhook-secret.txt'"
   }
 }

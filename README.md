@@ -86,10 +86,13 @@ Go to your App's page in [GitHub Developer settings](https://github.com/settings
 
 ```
 Options:
-  --port                 Port to run the HTTP server on     [required] [default: 7777]
-  --app-id               GitHub App ID                                      [required]
-  --app-cert             Path to the GitHub App's private key pem file      [required]
-  --webhook-secret-file  Path to a text file containing your Webhook secret [required]
+  --help                 Show help                                              [boolean]
+  --version              Show version number                                    [boolean]
+  --port                 Port to run the HTTP server on                         [required] [default: 7777]
+  --app-id               GitHub App ID                                          [required]
+  --app-cert             Path to the GitHub App's private key pem file          [required]
+  --webhook-secret-file  Path to a text file containing your Webhook secret     [required]
+  --queue-concurrency    How many instances of a job are allowed to run at once [default: "master=1,pull-request=3"]
 ```
 
 So for example:

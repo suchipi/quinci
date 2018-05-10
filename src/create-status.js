@@ -1,5 +1,24 @@
+/* @flow */
+type StatusInput = {
+  github: any,
+  jobName: string,
+  owner: string,
+  repo: string,
+  sha: string,
+};
+
 module.exports = {
-  running({ github, jobName, owner, repo, sha }) {
+  waiting({ github, jobName, owner, repo, sha }: StatusInput): Promise<any> {
+    return github.repos.createStatus({
+      owner,
+      repo,
+      sha,
+      state: "pending",
+      description: `QuinCI - '${jobName}' Waiting in queue`,
+      context: `quinci:${jobName}`,
+    });
+  },
+  running({ github, jobName, owner, repo, sha }: StatusInput): Promise<any> {
     return github.repos.createStatus({
       owner,
       repo,
@@ -9,7 +28,7 @@ module.exports = {
       context: `quinci:${jobName}`,
     });
   },
-  success({ github, jobName, owner, repo, sha }) {
+  success({ github, jobName, owner, repo, sha }: StatusInput): Promise<any> {
     return github.repos.createStatus({
       owner,
       repo,
@@ -19,7 +38,7 @@ module.exports = {
       context: `quinci:${jobName}`,
     });
   },
-  failure({ github, jobName, owner, repo, sha }) {
+  failure({ github, jobName, owner, repo, sha }: StatusInput): Promise<any> {
     return github.repos.createStatus({
       owner,
       repo,
@@ -29,7 +48,7 @@ module.exports = {
       context: `quinci:${jobName}`,
     });
   },
-  error({ github, jobName, owner, repo, sha }) {
+  error({ github, jobName, owner, repo, sha }: StatusInput): Promise<any> {
     return github.repos.createStatus({
       owner,
       repo,

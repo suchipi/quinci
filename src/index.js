@@ -1,7 +1,10 @@
+/* @flow */
+import type { NormalizedConfig } from "./normalize-config";
+
 const http = require("http");
 const createHandler = require("./create-handler");
 
-module.exports = function runQuinCI(config) {
+module.exports = function runQuinCI(config: NormalizedConfig): Promise<void> {
   const handler = createHandler(config);
 
   return new Promise((resolve) => {

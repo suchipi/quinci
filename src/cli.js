@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* @flow */
 const argv = require("yargs")
   .option("port", {
     describe: "Port to run the HTTP server on",
@@ -12,6 +13,10 @@ const argv = require("yargs")
   })
   .option("webhook-secret-file", {
     describe: "Path to a text file containing your Webhook secret",
+  })
+  .option("queue-concurrency", {
+    describe: "How many instances of a job are allowed to run at once",
+    default: "master=1,pull-request=3",
   })
   .demandOption(["port", "app-id", "app-cert", "webhook-secret-file"]).argv;
 

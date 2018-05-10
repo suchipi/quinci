@@ -1,7 +1,16 @@
+/* @flow */
 const spawn = require("spawndamnit");
 const shell = require("shelljs");
 
-module.exports = function runJob({ remote, commitSha, jobName }) {
+module.exports = function runJob({
+  remote,
+  commitSha,
+  jobName,
+}: {
+  remote: string,
+  commitSha: string,
+  jobName: string,
+}): Promise<{ code: number, stdout: string, stderr: string, output: string }> {
   const now = Date.now();
   const jobDir = `jobs/${jobName}/${now}`;
   const runDir = `${jobDir}/${commitSha}`;
@@ -12,7 +21,10 @@ module.exports = function runJob({ remote, commitSha, jobName }) {
     "sh",
     [
       "-c",
-      `git clone --quiet ${remote} ${commitSha} && cd ${commitSha} && git checkout --quiet ${commitSha} && ./quinci/${jobName}`,
+      `git clone --quiet ${remote} ${commitSha} && ` +
+        `cd ${commitSha} && ` +
+        `git checkout --quiet ${commitSha} && ` +
+        `./quinci/${jobName}`,
     ],
     {
       cwd: jobDir,
