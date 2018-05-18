@@ -99,6 +99,9 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
       });
       log(`Job '${jobName}' finished with status code ${code}`);
 
+      log(`Reauthenticating GitHub Client`);
+      github = await app.asInstallation(payload.installation.id);
+
       if (code === 0) {
         log("Setting status to success");
         await createStatus.success({
