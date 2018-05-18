@@ -5,16 +5,22 @@ const commentTemplates = require("../comment-templates");
 const createStatus = require("../create-status");
 
 module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
+  let log;
+  let github;
+  let jobName;
+  let owner;
+  let repo;
+  let sha;
+  let number;
+
   handler.on("pull_request", async ({ payload }) => {
-    const [owner, repo] = payload.repository.full_name.split("/");
-    const sha = payload.pull_request.head.sha;
-    const number = payload.number;
-    const log = makeLogger(`${repo}/${owner} #${number} ${sha}: `);
-
-    let github: any;
-    const jobName = "pull-request";
-
     try {
+      [owner, repo] = payload.repository.full_name.split("/");
+      sha = payload.pull_request.head.sha;
+      number = payload.number;
+      log = makeLogger(`${repo}/${owner} #${number} ${sha}: `);
+      jobName = "pull-request";
+
       log("Received a pull_request event");
 
       if (payload.action !== "synchronize" && payload.action !== "opened") {
@@ -129,7 +135,7 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         });
       }
     } catch (error) {
-      log("Error: " + error);
+      log("Error: " + error.stack);
       if (github != null) {
         log("Setting status to error");
         await createStatus.error({

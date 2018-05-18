@@ -49,12 +49,12 @@ module.exports = {
       `❌ QuinCI run of job '${jobName}' errored.\n` +
       "Error:\n" +
       "\n``````\n";
-    const body = error.toString().trim();
+    const body = error.stack.trim();
     const footer = "\n``````\n" + "</details>";
 
     return (
       header +
-      body.slice(-(MAX_COMMENT_SIZE - header.length - footer.length)) +
+      body.slice(0, MAX_COMMENT_SIZE - header.length - footer.length) +
       footer
     );
   },

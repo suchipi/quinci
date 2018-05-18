@@ -5,16 +5,22 @@ const commentTemplates = require("../comment-templates");
 const createStatus = require("../create-status");
 
 module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
+  let log;
+  let github;
+  let jobName;
+  let owner;
+  let repo;
+  let sha;
+  let number;
+
   handler.on("issue_comment", async ({ payload }) => {
-    const [owner, repo] = payload.repository.full_name.split("/");
-    const number = payload.issue.number;
-    let log = makeLogger(`${repo}/${owner} #${number}: `);
-
-    let github;
-    let sha;
-    const jobName = "pull-request";
-
     try {
+      [owner, repo] = payload.repository.full_name.split("/");
+      number = payload.issue.number;
+      log = makeLogger(`${repo}/${owner} #${number}: `);
+
+      const jobName = "pull-request";
+
       log("Received a issue_comment event");
 
       github = await app.asInstallation(payload.installation.id);
@@ -148,7 +154,7 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         });
       }
     } catch (error) {
-      log("Error: " + error);
+      log("Error: " + error.stack);
       if (github != null && sha != null && jobName != null) {
         log("Setting status to error");
         await createStatus.error({

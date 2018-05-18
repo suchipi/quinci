@@ -5,17 +5,24 @@ const commentTemplates = require("../comment-templates");
 const createStatus = require("../create-status");
 
 module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
-  handler.on("push", async ({ payload }) => {
-    const [owner, repo] = payload.repository.full_name.split("/");
-    const sha = payload.head_commit.id;
-    const log = makeLogger(`${repo}/${owner} ${sha}: `);
+  let log;
+  let github;
+  let jobName;
+  let owner;
+  let repo;
+  let sha;
 
-    let github;
-    const jobName = "master";
-
-    log("Received a push event");
-
+  handler.on("push", async (event) => {
     try {
+      const { payload } = event;
+      [owner, repo] = payload.repository.full_name.split("/");
+      sha = payload.head_commit.id;
+      log = makeLogger(`${repo}/${owner} ${sha}: `);
+
+      jobName = "master";
+
+      log("Received a push event");
+
       if (payload.ref !== "refs/heads/master") {
         log("Aborting because the push was not to master");
         return;
@@ -90,7 +97,7 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         });
       }
     } catch (error) {
-      log("Error: " + error);
+      log("Error: " + error.stack);
       if (github != null) {
         log("Setting status to error");
         await createStatus.error({
