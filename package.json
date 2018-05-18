@@ -31,6 +31,6 @@
   "scripts": {
     "build": "rimraf dist/* && babel src --out-dir dist",
     "build:watch": "babel --watch src --out-dir dist",
-    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt"
+    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 11638 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt"
   }
 }
