@@ -19,7 +19,6 @@
     "@babel/core": "^7.0.0-beta.46",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.46",
     "babel-eslint": "^8.2.3",
-    "concurrently": "^3.5.1",
     "eslint": "^4.19.1",
     "eslint-config-unobtrusive": "^1.2.2",
     "eslint-plugin-flowtype": "^2.46.3",
@@ -31,6 +30,7 @@
   },
   "scripts": {
     "build": "rimraf dist/* && babel src --out-dir dist",
-    "start": "rimraf dist/* && concurrently 'babel --watch src --out-dir dist' 'nodemon --watch dist dist/cli.js -- --app-id 11578 --app-cert secrets/quinci-mac-at-home.private-key.pem --webhook-secret-file secrets/webhook-secret.txt'"
+    "build:watch": "babel --watch src --out-dir dist",
+    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt"
   }
 }
