@@ -29,5 +29,6 @@ const config = normalizeConfig(argv);
 debug("Config: " + JSON.stringify(config, null, 2));
 
 runDumbCI(config).then(() => {
-  console.log("QuinCI is running");
+  const version = require("../package.json").version;
+  console.log(`QuinCI ${version} is running`);
 });
