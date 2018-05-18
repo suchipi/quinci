@@ -14,7 +14,7 @@ module.exports = {
       repo,
       sha,
       state: "pending",
-      description: `QuinCI - '${jobName}' Waiting in queue`,
+      description: `QuinCI - '${jobName}' waiting in queue`,
       context: `quinci:${jobName}`,
     });
   },
@@ -24,7 +24,7 @@ module.exports = {
       repo,
       sha,
       state: "pending",
-      description: `QuinCI - Running '${jobName}'`,
+      description: `QuinCI - '${jobName}' running`,
       context: `quinci:${jobName}`,
     });
   },
