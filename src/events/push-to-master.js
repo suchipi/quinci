@@ -16,7 +16,7 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
     try {
       const { payload } = event;
       [owner, repo] = payload.repository.full_name.split("/");
-      sha = payload.head_commit.id;
+      sha = payload.after;
       log = makeLogger(`${repo}/${owner} ${sha}: `);
 
       jobName = "master";
