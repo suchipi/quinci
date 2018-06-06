@@ -1,6 +1,6 @@
 {
   "name": "quinci",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "bin": "dist/cli.js",
   "main": "dist/index.js",
   "license": "MIT",
