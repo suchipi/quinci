@@ -8,10 +8,12 @@
     "debug": "^3.1.0",
     "github-app": "^3.2.0",
     "github-webhook-handler": "^0.7.1",
+    "handlebars": "^4.0.11",
     "promise-queue": "^2.2.5",
     "shelljs": "^0.8.1",
     "spawndamnit": "^2.0.0",
     "strip-ansi": "^4.0.0",
+    "uid": "^0.0.2",
     "yargs": "^11.0.0"
   },
   "devDependencies": {
@@ -31,6 +33,6 @@
   "scripts": {
     "build": "rimraf dist/* && babel src --out-dir dist",
     "build:watch": "babel --watch src --out-dir dist",
-    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 11638 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt"
+    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt"
   }
 }

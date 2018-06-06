@@ -107,6 +107,8 @@ This will run QuinCI in the current directory.
 
 QuinCI runs "jobs" when certain "events" occur. A job is an executable file that lives in your repo in the `quinci` folder. An event is something that can happen on GitHub, like a commit being added to master, or a Pull Request being opened.
 
+You can view all the jobs QuinCI is running or has run recently by opening the port QuinCI is running on in your browser.
+
 Here's a list of the events QuinCI reacts to, and what job it will run for each event:
 
 | Event                                  | Job      |

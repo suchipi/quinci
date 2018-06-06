@@ -5,9 +5,12 @@ import type { Queues } from "./create-queues";
 import type { IncomingMessage, ServerResponse } from "http";
 const fs = require("fs");
 const path = require("path");
+const url = require("url");
 const githubWebhookHandler = require("github-webhook-handler");
+const makeDebug = require("debug");
 const createApp = require("./create-app");
 const createQueues = require("./create-queues");
+const statusPage = require("./status-page");
 
 export type Handler = ((
   req: IncomingMessage,
@@ -30,7 +33,7 @@ export type SetupEventFunction = ({
 module.exports = function createHandler(config: NormalizedConfig): Handler {
   const app = createApp(config);
   const queues = createQueues(config);
-  const handler = githubWebhookHandler({
+  const webhookHandler = githubWebhookHandler({
     path: "/",
     secret: fs
       .readFileSync(
@@ -39,6 +42,17 @@ module.exports = function createHandler(config: NormalizedConfig): Handler {
       )
       .trim(),
   });
+
+  const debugHttp = makeDebug("quinci:http");
+  const handler = (req, res, next) => {
+    debugHttp(req.method, req.url);
+    if (req.method === "GET" && url.parse(req.url).pathname === "/") {
+      statusPage(queues, req, res, next);
+    } else {
+      webhookHandler(req, res, next);
+    }
+  };
+  handler.on = webhookHandler.on.bind(webhookHandler);
 
   [
     {
@@ -58,7 +72,7 @@ module.exports = function createHandler(config: NormalizedConfig): Handler {
       setupEvent: require("./events/push-to-master"),
     },
   ].forEach(({ loggerName, setupEvent }) => {
-    const debug = require("debug")(`quinci:${loggerName}`);
+    const debug = makeDebug(`quinci:${loggerName}`);
     const makeLogger = (prefix) => (msg) => debug(`${prefix}${msg}`);
     setupEvent({ handler, app, queues, makeLogger });
   });
