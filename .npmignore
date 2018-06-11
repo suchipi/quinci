@@ -1,0 +1,10 @@
+secrets
+jobs
+yarn-error.log
+src
+.babelrc
+.eslintrc
+.flowconfig
+.gitignore
+.prettierignore
+.prettierrc
