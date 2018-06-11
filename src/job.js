@@ -48,7 +48,6 @@ module.exports = class Job extends EventEmitter {
 
   setStatus(newStatus: JobStatus, maybeError?: Error) {
     this.status = newStatus;
-    this.emit("changing-status");
     this.emit(newStatus, maybeError);
   }
 

@@ -1,25 +1,21 @@
 /* @flow */
 import type { SetupEventFunction } from "../create-handler";
 const Job = require("../job");
-const commentTemplates = require("../comment-templates");
-const createStatus = require("../create-status");
+const GithubReporter = require("../github-reporter");
 
 module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
-  let log;
-  let github;
-  let jobName;
-  let owner;
-  let repo;
-  let sha;
-  let number;
-
   handler.on("pull_request", async ({ payload }) => {
+    // $FlowFixMe
+    let log: (msg: string) => void;
+    // $FlowFixMe
+    let reporter: GithubReporter;
+
     try {
-      [owner, repo] = payload.repository.full_name.split("/");
-      sha = payload.pull_request.head.sha;
-      number = payload.number;
+      const [owner, repo] = payload.repository.full_name.split("/");
+      const sha = payload.pull_request.head.sha;
+      const number = payload.number;
       log = makeLogger(`${repo}/${owner} #${number} ${sha}: `);
-      jobName = "pull-request";
+      const jobName = "pull-request";
 
       log("Received a pull_request event");
 
@@ -28,7 +24,7 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         return;
       }
 
-      github = await app.asInstallation(payload.installation.id);
+      const github = await app.asInstallation(payload.installation.id);
 
       const username = payload.sender.login;
       log(`Checking if ${username} has write access`);
@@ -44,6 +40,16 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         return;
       }
 
+      reporter = new GithubReporter({
+        app,
+        installationId: payload.installation.id,
+        owner,
+        repo,
+        sha,
+        number,
+        jobName,
+      });
+
       const queue = queues.getQueueForJobName(jobName);
       log(`Queue concurrency for '${jobName}' is ${queue.getConcurrency()}.`);
       log(
@@ -55,21 +61,10 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
 
       if (!queue.canRunNow()) {
         log("Setting status to waiting");
-        await createStatus.waiting({
-          github,
-          jobName,
-          owner,
-          repo,
-          sha,
-        });
+        await reporter.setStatus("waiting");
 
         log("Posting waiting comment");
-        await github.issues.createComment({
-          owner,
-          repo,
-          number,
-          body: commentTemplates.waiting(jobName),
-        });
+        await reporter.issueComment({ status: "waiting" });
       }
 
       const job = new Job({
@@ -78,119 +73,71 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         remote: payload.pull_request.head.repo.ssh_url,
       });
 
-      job.on("changing-status", async () => {
-        log(`Reauthenticating GitHub Client`);
-        github = await app.asInstallation(payload.installation.id);
-      });
-
       job.on("running", async () => {
         log(`Running job '${jobName}'`);
         log("Setting status to running");
-        await createStatus.running({
-          github,
-          jobName,
-          owner,
-          repo,
-          sha,
-        });
+        await reporter.setStatus("running");
 
         log("Posting running comment");
-        await github.issues.createComment({
-          owner,
-          repo,
-          number,
-          body: commentTemplates.running(jobName),
-        });
+        await reporter.issueComment({ status: "running" });
       });
 
       job.on("success", async () => {
         log(`Job '${jobName}' succeeded`);
         log("Setting status to success");
-        await createStatus.success({
-          github,
-          jobName,
-          owner,
-          repo,
-          sha,
-        });
+        await reporter.setStatus("success");
 
         log("Posting success comment");
-        await github.issues.createComment({
-          owner,
-          repo,
-          number: payload.number,
-          body: commentTemplates.success(jobName, job.runResult.output),
+        await reporter.issueComment({
+          status: "success",
+          output: job.runResult.output,
         });
       });
 
       job.on("failure", async () => {
         log(`Job '${jobName}' failed`);
         log("Setting status to failure");
-        await createStatus.failure({
-          github,
-          jobName,
-          owner,
-          repo,
-          sha,
-        });
+        await reporter.setStatus("failure");
 
         log("Posting failure comment");
-        await github.issues.createComment({
-          owner,
-          repo,
-          number: payload.number,
-          body: commentTemplates.failure(jobName, job.runResult.output, code),
+        await reporter.issueComment({
+          status: "failure",
+          output: job.runResult.output,
+          code: job.runResult.code,
         });
       });
 
       job.on("error", async (error) => {
         log(`Job '${jobName}' errored: ${error.stack}`);
         log("Setting status to error");
-        await createStatus.error({
-          github,
-          jobName,
-          owner,
-          repo,
-          sha,
-        });
+        await reporter.setStatus("error");
 
         await log("Posting error comment");
-        github.issues.createComment({
-          owner,
-          repo,
-          number: payload.number,
-          body: commentTemplates.error(jobName, error),
+        await reporter.issueComment({
+          status: "error",
+          error,
         });
       });
 
       const { code } = await queue.add(job);
       log(`Job '${jobName}' finished with status code ${code}`);
-
-      log(`Reauthenticating GitHub Client`);
-      github = await app.asInstallation(payload.installation.id);
     } catch (error) {
+      if (log == null) {
+        log = makeLogger(`Failed event handler: `);
+      }
       log(
         "Error in event handler: " + (error && error.stack)
           ? error.stack
           : error
       );
-      if (github != null) {
+      if (reporter != null) {
         log("Setting status to error");
-        await createStatus.error({
-          github,
-          jobName,
-          owner,
-          repo,
-          sha,
-        });
+        await reporter.setStatus("error");
 
-        await log("Posting error comment");
-        github.issues.createComment({
-          owner,
-          repo,
-          number: payload.number,
-          body: commentTemplates.error(jobName, error),
-        });
+        log("Posting error comment");
+        await reporter.issueComment({ status: "error", error });
+      } else {
+        log("Could not set status and post comment because reporter was null.");
       }
     }
   });
