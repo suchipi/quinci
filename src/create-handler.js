@@ -11,6 +11,7 @@ const makeDebug = require("debug");
 const createApp = require("./create-app");
 const createQueues = require("./create-queues");
 const statusPage = require("./status-page");
+const cancelJob = require("./cancel-job");
 
 export type Handler = ((
   req: IncomingMessage,
@@ -48,6 +49,11 @@ module.exports = function createHandler(config: NormalizedConfig): Handler {
     debugHttp(req.method, req.url);
     if (req.method === "GET" && url.parse(req.url).pathname === "/") {
       statusPage(queues, req, res, next);
+    } else if (
+      req.method === "GET" &&
+      url.parse(req.url).pathname === "/cancel"
+    ) {
+      cancelJob(queues, req, res, next);
     } else {
       webhookHandler(req, res, next);
     }

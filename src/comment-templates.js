@@ -58,4 +58,7 @@ module.exports = {
       footer
     );
   },
+  canceled(jobName: string) {
+    return `🚫 QuinCI run of job '${jobName}' was canceled.`;
+  },
 };

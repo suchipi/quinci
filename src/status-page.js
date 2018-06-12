@@ -67,7 +67,13 @@ const template: ({
                   </a>
                   <p>Git SHA: {{this.commitSha}}</p>
                   <p>Status: {{this.status}}</p>
-                  <p>Exit Code: {{this.code}}</p>
+                  {{#if this.running}}
+                    <p>
+                      <a href="/cancel?jobId={{this.uid}}">Cancel Job</a>
+                    </p>
+                  {{else}}
+                    <p>Exit Code: {{this.code}}</p>
+                  {{/if}}
                   <details {{#if this.selected}}open{{/if}}>
                     <summary>Output</summary>
                     <pre><code>{{this.output}}</code></pre>
@@ -91,7 +97,6 @@ module.exports = function statusPage(
   next: (err: ?Error) => void
 ) {
   const urlObj = url.parse(req.url);
-  console.log({ urlObj });
 
   res.statusCode = 200;
   const templateData = {
@@ -103,10 +108,8 @@ module.exports = function statusPage(
           uid: job.uid,
           commitSha: job.commitSha,
           status: job.status,
-          code:
-            job.runResult.code === -1
-              ? "(not finished yet)"
-              : job.runResult.code,
+          running: job.status === "running",
+          code: job.runResult.code,
           selected: urlObj.query === job.uid,
           output: job.runResult.output,
           createdAt: job.createdAt.toString(),

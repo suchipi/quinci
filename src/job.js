@@ -1,10 +1,17 @@
 /* @flow */
 const EventEmitter = require("events");
-const spawn = require("spawndamnit");
+const onExit = require("signal-exit");
+const spawn = require("cross-spawn");
 const shell = require("shelljs");
 const uid = require("uid");
 
-type JobStatus = "waiting" | "running" | "success" | "failure" | "error";
+type JobStatus =
+  | "waiting"
+  | "running"
+  | "success"
+  | "failure"
+  | "error"
+  | "canceled";
 
 export type JobRunResult = {
   code: number,
@@ -12,6 +19,14 @@ export type JobRunResult = {
   stderr: string,
   output: string,
 };
+
+const runningChildren = new Set();
+
+onExit(() => {
+  for (let child of runningChildren) {
+    child.kill("SIGTERM");
+  }
+});
 
 module.exports = class Job extends EventEmitter {
   uid: string;
@@ -21,6 +36,8 @@ module.exports = class Job extends EventEmitter {
   status: JobStatus;
   runResult: JobRunResult;
   createdAt: Date;
+  cancel: () => void;
+  _canceled: boolean;
 
   constructor({
     remote,
@@ -44,6 +61,9 @@ module.exports = class Job extends EventEmitter {
       output: "",
     };
     this.createdAt = new Date();
+
+    this.cancel = () => {};
+    this._canceled = false;
   }
 
   setStatus(newStatus: JobStatus, maybeError?: Error) {
@@ -59,7 +79,7 @@ module.exports = class Job extends EventEmitter {
     const logFile = `${runDir}/quinci-log.txt`;
 
     shell.mkdir("-p", runDir);
-    const child = spawn(
+    const child: child_process$ChildProcess = spawn(
       "sh",
       [
         "-c",
@@ -78,35 +98,61 @@ module.exports = class Job extends EventEmitter {
         }),
       }
     );
+    runningChildren.add(child);
     this.setStatus("running");
 
-    child.on("stdout", (data) => {
-      const dataAsString = data.toString("utf-8");
-      this.runResult.stdout += dataAsString;
-      this.runResult.output += dataAsString;
-      shell.echo(dataAsString).toEnd(logFile);
-    });
-    child.on("stderr", (data) => {
-      const dataAsString = data.toString("utf-8");
-      this.runResult.stderr += dataAsString;
-      this.runResult.output += dataAsString;
-      shell.echo(dataAsString).toEnd(logFile);
-    });
+    return new Promise((resolve, reject) => {
+      this.cancel = () => {
+        this._canceled = true;
+        child.kill("SIGKILL");
+        this.setStatus("canceled");
+        resolve(this.runResult);
+      };
 
-    return child
-      .then(({ code, stdout, stderr }) => {
-        Object.assign(this.runResult, { code, stdout, stderr });
+      child.stdout.on("data", (data) => {
+        if (this._canceled) {
+          return;
+        }
+        const dataAsString = data.toString("utf-8");
+        this.runResult.stdout += dataAsString;
+        this.runResult.output += dataAsString;
+        shell.echo(dataAsString).toEnd(logFile);
+      });
+      child.stderr.on("data", (data) => {
+        if (this._canceled) {
+          return;
+        }
+        const dataAsString = data.toString("utf-8");
+        this.runResult.stderr += dataAsString;
+        this.runResult.output += dataAsString;
+        shell.echo(dataAsString).toEnd(logFile);
+      });
+
+      child.on("error", (err) => {
+        if (this._canceled) {
+          return;
+        }
+        runningChildren.delete(child);
+        reject(err);
+      });
+
+      child.on("close", (code) => {
+        if (this._canceled) {
+          return;
+        }
+        runningChildren.delete(child);
+        this.runResult.code = code;
         if (code === 0) {
           this.setStatus("success");
         } else {
           this.setStatus("failure");
         }
         shell.rm("-rf", jobDir);
-        return this.runResult;
-      })
-      .catch((err) => {
-        this.setStatus("error", err);
-        throw err;
+        resolve(this.runResult);
       });
+    }).catch((err) => {
+      this.setStatus("error", err);
+      throw err;
+    });
   }
 };

@@ -5,13 +5,14 @@
   "main": "dist/index.js",
   "license": "MIT",
   "dependencies": {
+    "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
     "github-app": "^3.2.0",
     "github-webhook-handler": "^0.7.1",
     "handlebars": "^4.0.11",
     "promise-queue": "^2.2.5",
     "shelljs": "^0.8.1",
-    "spawndamnit": "^2.0.0",
+    "signal-exit": "^3.0.2",
     "strip-ansi": "^4.0.0",
     "uid": "^0.0.2",
     "yargs": "^11.0.0"

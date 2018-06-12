@@ -49,6 +49,7 @@ class Queue {
 export type Queues = {
   getQueueForJobName(jobName: string): Queue,
   getAllJobsForQueues(): Array<{ jobName: string, jobs: Array<Job> }>,
+  getAllJobsByUid(): { [uid: string]: Job },
 };
 
 module.exports = function createQueues(config: NormalizedConfig): Queues {
@@ -78,6 +79,17 @@ module.exports = function createQueues(config: NormalizedConfig): Queues {
           jobs: queue.getJobs(),
         })
       );
+    },
+    getAllJobsByUid() {
+      const jobs = {};
+      ((Object.entries(queues): any): Array<[string, Queue]>).forEach(
+        ([jobName, queue]) => {
+          queue.getJobs().forEach((job) => {
+            jobs[job.uid] = job;
+          });
+        }
+      );
+      return jobs;
     },
   };
 };

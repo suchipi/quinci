@@ -2,7 +2,13 @@
 import type { App } from "./create-app";
 const commentTemplates = require("./comment-templates");
 
-type ResultStatus = "waiting" | "running" | "success" | "failure" | "error";
+type ResultStatus =
+  | "waiting"
+  | "running"
+  | "success"
+  | "failure"
+  | "error"
+  | "canceled";
 
 type CommentArg =
   | {|
@@ -23,6 +29,9 @@ type CommentArg =
   | {|
       status: "error",
       error: Error,
+    |}
+  | {|
+      status: "canceled",
     |};
 
 module.exports = class GithubReporter {
@@ -69,6 +78,7 @@ module.exports = class GithubReporter {
       success: "success",
       failure: "failure",
       error: "error",
+      canceled: "failure",
     }[status];
     const descriptionForStatus = {
       waiting: `QuinCI - '${jobName}' waiting in queue`,
@@ -76,6 +86,7 @@ module.exports = class GithubReporter {
       success: `QuinCI - '${jobName}' ran successfully`,
       failure: `QuinCI - '${jobName}' failed`,
       error: `QuinCI - '${jobName}' errored`,
+      canceled: `QuinCI - '${jobName}' was canceled`,
     }[status];
 
     if (stateForStatus == null || descriptionForStatus == null) {
@@ -111,6 +122,9 @@ module.exports = class GithubReporter {
       }
       case "error": {
         return commentTemplates.error(jobName, input.error);
+      }
+      case "canceled": {
+        return commentTemplates.canceled(jobName);
       }
       default: {
         (input.status: empty);

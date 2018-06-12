@@ -88,6 +88,15 @@ module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
         await reporter.commitComment({ status: "error", error });
       });
 
+      job.on("canceled", async () => {
+        log(`Job '${jobName}' was canceled`);
+        log("Setting status to canceled");
+        await reporter.setStatus("canceled");
+
+        log("Posting canceled comment");
+        await reporter.commitComment({ status: "canceled" });
+      });
+
       const { code } = await queue.add(job);
       log(`Job ${jobName} finished with status code ${code}`);
     } catch (error) {
