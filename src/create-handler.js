@@ -6,8 +6,7 @@ const url = require("url");
 const githubWebhookHandler = require("github-webhook-handler");
 const makeDebug = require("debug");
 const AppContext = require("./app-context");
-const statusPage = require("./status-page");
-const cancelJob = require("./cancel-job");
+const webUI = require("./web-ui");
 
 export type Handler = ((
   req: IncomingMessage,
@@ -27,12 +26,11 @@ export type SetupEventFunction = ({
 }) => void;
 
 module.exports = function createHandler(appContext: AppContext): Handler {
-  const { queues, config } = appContext;
   const webhookHandler = githubWebhookHandler({
     path: "/",
     secret: fs
       .readFileSync(
-        path.resolve(process.cwd(), config.webhookSecretFile),
+        path.resolve(process.cwd(), appContext.config.webhookSecretFile),
         "utf-8"
       )
       .trim(),
@@ -41,16 +39,9 @@ module.exports = function createHandler(appContext: AppContext): Handler {
   const debugHttp = makeDebug("quinci:http");
   const handler = (req, res, next) => {
     debugHttp(req.method, req.url);
-    if (req.method === "GET" && url.parse(req.url).pathname === "/") {
-      statusPage(queues, req, res, next);
-    } else if (
-      req.method === "GET" &&
-      url.parse(req.url).pathname === "/cancel"
-    ) {
-      cancelJob(queues, req, res, next);
-    } else {
+    webUI(appContext, req, res, () => {
       webhookHandler(req, res, next);
-    }
+    });
   };
   handler.on = webhookHandler.on.bind(webhookHandler);
 

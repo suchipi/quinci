@@ -1,8 +1,8 @@
 /* @flow */
 import type { IncomingMessage, ServerResponse } from "http";
-import type { Queues } from "./create-queues";
 const url = require("url");
 const Handlebars = require("handlebars");
+const AppContext = require("../app-context");
 
 const template: ({
   queues: Array<{
@@ -91,16 +91,15 @@ const template: ({
 `);
 
 module.exports = function statusPage(
-  queues: Queues,
+  appContext: AppContext,
   req: IncomingMessage,
-  res: ServerResponse,
-  next: (err: ?Error) => void
+  res: ServerResponse
 ) {
   const urlObj = url.parse(req.url);
 
   res.statusCode = 200;
   const templateData = {
-    queues: queues.getAllJobsForQueues().map(({ jobName, jobs }) => {
+    queues: appContext.queues.getAllJobsForQueues().map(({ jobName, jobs }) => {
       return {
         name: jobName,
         // Reverse jobs here so that most recent jobs are at the top.

@@ -1,15 +1,14 @@
 /* @flow */
 import type { IncomingMessage, ServerResponse } from "http";
-import type { Queues } from "./create-queues";
+const AppContext = require("../app-context");
 
 const url = require("url");
 const querystring = require("querystring");
 
 module.exports = function cancelJob(
-  queues: Queues,
+  appContext: AppContext,
   req: IncomingMessage,
-  res: ServerResponse,
-  next: (err: ?Error) => void
+  res: ServerResponse
 ) {
   const urlObj = url.parse(req.url);
   const query = urlObj.query;
@@ -31,7 +30,7 @@ module.exports = function cancelJob(
     return;
   }
 
-  const jobs = queues.getAllJobsByUid();
+  const jobs = appContext.queues.getAllJobsByUid();
   const job = jobs[jobId];
 
   if (job == null) {
