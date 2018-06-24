@@ -3,8 +3,9 @@ import type { SetupEventFunction } from "../create-handler";
 const Job = require("../job");
 const GithubReporter = require("../github-reporter");
 
-module.exports = (function setupEvent({ handler, app, queues, makeLogger }) {
+module.exports = (function setupEvent({ handler, appContext, makeLogger }) {
   handler.on("pull_request", async ({ payload }) => {
+    const { app, queues } = appContext;
     // $FlowFixMe
     let log: (msg: string) => void;
     // $FlowFixMe

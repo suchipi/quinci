@@ -1,15 +1,11 @@
 /* @flow */
-import type { App } from "./create-app";
-import type { NormalizedConfig } from "./normalize-config";
-import type { Queues } from "./create-queues";
 import type { IncomingMessage, ServerResponse } from "http";
 const fs = require("fs");
 const path = require("path");
 const url = require("url");
 const githubWebhookHandler = require("github-webhook-handler");
 const makeDebug = require("debug");
-const createApp = require("./create-app");
-const createQueues = require("./create-queues");
+const AppContext = require("./app-context");
 const statusPage = require("./status-page");
 const cancelJob = require("./cancel-job");
 
@@ -26,14 +22,12 @@ export type Handler = ((
 
 export type SetupEventFunction = ({
   handler: Handler,
-  app: App,
-  queues: Queues,
+  appContext: AppContext,
   makeLogger: (prefix: string) => (message: string) => void,
 }) => void;
 
-module.exports = function createHandler(config: NormalizedConfig): Handler {
-  const app = createApp(config);
-  const queues = createQueues(config);
+module.exports = function createHandler(appContext: AppContext): Handler {
+  const { queues, config } = appContext;
   const webhookHandler = githubWebhookHandler({
     path: "/",
     secret: fs
@@ -80,7 +74,7 @@ module.exports = function createHandler(config: NormalizedConfig): Handler {
   ].forEach(({ loggerName, setupEvent }) => {
     const debug = makeDebug(`quinci:${loggerName}`);
     const makeLogger = (prefix) => (msg) => debug(`${prefix}${msg}`);
-    setupEvent({ handler, app, queues, makeLogger });
+    setupEvent({ handler, appContext, makeLogger });
   });
 
   return handler;

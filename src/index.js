@@ -3,10 +3,12 @@ import type { NormalizedConfig } from "./normalize-config";
 
 const http = require("http");
 const debug = require("debug")("quinci:http");
+const AppContext = require("./app-context");
 const createHandler = require("./create-handler");
 
 module.exports = function runQuinCI(config: NormalizedConfig): Promise<void> {
-  const handler = createHandler(config);
+  const appContext = new AppContext(config);
+  const handler = createHandler(appContext);
 
   return new Promise((resolve) => {
     const server = http.createServer(function(req, res) {
