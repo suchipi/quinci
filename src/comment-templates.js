@@ -4,17 +4,17 @@ const stripAnsi = require("strip-ansi");
 const MAX_COMMENT_SIZE = 65536;
 
 module.exports = {
-  waiting(jobName: string): string {
-    return `🕑 QuinCI will run '${jobName}' once other '${jobName}' jobs finish.\n`;
+  waiting(taskName: string): string {
+    return `🕑 QuinCI will run '${taskName}' once other '${taskName}' jobs finish.\n`;
   },
-  running(jobName: string): string {
-    return `🕑 QuinCI is running '${jobName}'...\n`;
+  running(taskName: string): string {
+    return `🕑 QuinCI is running '${taskName}'...\n`;
   },
-  success(jobName: string, rawOutput: string): string {
+  success(taskName: string, rawOutput: string): string {
     const output = stripAnsi(rawOutput);
 
     const header =
-      `✅ QuinCI run of job '${jobName}' passed.\n` +
+      `✅ QuinCI run of '${taskName}' passed.\n` +
       "<details>\n" +
       "<summary>Log output:</summary>\n" +
       "\n``````\n";
@@ -27,11 +27,11 @@ module.exports = {
       footer
     );
   },
-  failure(jobName: string, rawOutput: string, code: number): string {
+  failure(taskName: string, rawOutput: string, code: number): string {
     const output = stripAnsi(rawOutput);
 
     const header =
-      `❌ QuinCI run of job '${jobName}' failed. Exit code was ${code}.\n` +
+      `❌ QuinCI run of '${taskName}' failed. Exit code was ${code}.\n` +
       "<details>\n" +
       "<summary>Log output:</summary>\n" +
       "\n``````\n";
@@ -44,11 +44,9 @@ module.exports = {
       footer
     );
   },
-  error(jobName: string, error: Error): string {
+  error(taskName: string, error: Error): string {
     const header =
-      `❌ QuinCI run of job '${jobName}' errored.\n` +
-      "Error:\n" +
-      "\n``````\n";
+      `❌ QuinCI run of '${taskName}' errored.\n` + "Error:\n" + "\n``````\n";
     const body = error.stack.trim();
     const footer = "\n``````\n" + "</details>";
 
@@ -58,7 +56,7 @@ module.exports = {
       footer
     );
   },
-  canceled(jobName: string) {
-    return `🚫 QuinCI run of job '${jobName}' was canceled.`;
+  canceled(taskName: string) {
+    return `🚫 QuinCI run of '${taskName}' was canceled.`;
   },
 };

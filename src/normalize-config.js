@@ -4,7 +4,7 @@ export type InputConfig = {
   appCert: string,
   webhookSecretFile: string,
   port: number,
-  queueConcurrency: ?(string | { [jobName: string]: number }),
+  queueConcurrency: ?(string | { [taskName: string]: number }),
 };
 
 export type NormalizedConfig = {|
@@ -12,7 +12,7 @@ export type NormalizedConfig = {|
   appCert: string,
   webhookSecretFile: string,
   port: number,
-  queueConcurrency: { [jobName: string]: number },
+  queueConcurrency: { [taskName: string]: number },
 |};
 
 function invalidFormatError() {
@@ -32,7 +32,7 @@ function parseQueueConcurrencyString(configStr: string) {
   if (configStr) {
     try {
       configStr.split(",").forEach((entry) => {
-        const [jobName, concurrency] = entry.split("=");
+        const [taskName, concurrency] = entry.split("=");
         let parsedConcurrency;
         if (concurrency === "Infinity") {
           parsedConcurrency = Infinity;
@@ -42,7 +42,7 @@ function parseQueueConcurrencyString(configStr: string) {
         if (Number.isNaN(parsedConcurrency)) {
           throw invalidFormatError();
         } else {
-          queueConcurrencyObject[jobName] = parsedConcurrency;
+          queueConcurrencyObject[taskName] = parsedConcurrency;
         }
       });
     } catch (err) {

@@ -62,7 +62,7 @@ module.exports = class Job extends EventEmitter {
 
   // The name of the binary in the `quinci` folder in the repo that should be
   // executed.
-  jobName: string;
+  taskName: string;
 
   status: JobStatus;
   runResult: JobRunResult;
@@ -75,17 +75,17 @@ module.exports = class Job extends EventEmitter {
   constructor({
     remote,
     commitSha,
-    jobName,
+    taskName,
   }: {
     remote: string,
     commitSha: string,
-    jobName: string,
+    taskName: string,
   }) {
     super();
     this.uid = uid();
     this.remote = remote;
     this.commitSha = commitSha;
-    this.jobName = jobName;
+    this.taskName = taskName;
     this.status = "waiting";
     this.runResult = {
       code: -1,
@@ -105,10 +105,10 @@ module.exports = class Job extends EventEmitter {
   }
 
   run(): Promise<JobRunResult> {
-    const { remote, commitSha, jobName } = this;
+    const { remote, commitSha, taskName } = this;
     const now = Date.now();
-    const jobDir = `jobs/${jobName}/${now}`;
-    const runDir = `${jobDir}/${commitSha}`;
+    const jobDir = `jobs/${taskName}/${commitSha}`;
+    const runDir = `${jobDir}/${now}`;
     const logFile = `${runDir}/quinci-log.txt`;
 
     shell.mkdir("-p", runDir);
@@ -119,15 +119,18 @@ module.exports = class Job extends EventEmitter {
         `git clone --quiet ${remote} ${commitSha} && ` +
           `cd ${commitSha} && ` +
           `git checkout --quiet ${commitSha} && ` +
-          `./quinci/${jobName}`,
+          `./quinci/${taskName}`,
       ],
       {
         cwd: jobDir,
         env: Object.assign({}, process.env, {
           CI: "true",
           QUINCI_REMOTE: remote,
-          QUINCI_JOB_NAME: jobName,
+          QUINCI_TASK_NAME: taskName,
           QUINCI_COMMIT_SHA: commitSha,
+          QUINCI_RUN_DIR: runDir,
+          QUINCI_LOG_FILE: logFile,
+          QUINCI_JOB_UID: this.uid,
         }),
       }
     );

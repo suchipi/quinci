@@ -12,32 +12,32 @@ module.exports = class Queues {
 
     ((Object.entries(config.queueConcurrency): any): Array<
       [string, number]
-    >).forEach(([jobName, concurrency]) => {
-      this._queuesMap.set(jobName, new Queue(concurrency));
+    >).forEach(([taskName, concurrency]) => {
+      this._queuesMap.set(taskName, new Queue(concurrency));
     });
   }
 
-  getQueueForJobName(jobName: string): Queue {
-    const queue = this._queuesMap.get(jobName);
+  getQueueFortaskName(taskName: string): Queue {
+    const queue = this._queuesMap.get(taskName);
     if (queue) {
       return queue;
     } else {
       const newQueue = new Queue(Infinity);
-      this._queuesMap.set(jobName, newQueue);
+      this._queuesMap.set(taskName, newQueue);
       return newQueue;
     }
   }
 
-  getAllJobsForQueues(): Array<{ jobName: string, jobs: Array<Job> }> {
-    return Array.from(this._queuesMap).map(([jobName, queue]) => ({
-      jobName,
+  getAllJobsForQueues(): Array<{ taskName: string, jobs: Array<Job> }> {
+    return Array.from(this._queuesMap).map(([taskName, queue]) => ({
+      taskName,
       jobs: queue.getJobs(),
     }));
   }
 
   getAllJobsByUid(): { [uid: string]: Job } {
     const jobs = {};
-    this._queuesMap.forEach((queue, jobName) => {
+    this._queuesMap.forEach((queue, taskName) => {
       queue.getJobs().forEach((job) => {
         jobs[job.uid] = job;
       });

@@ -41,7 +41,7 @@ module.exports = class GithubReporter {
   repo: string;
   sha: string;
   number: ?string;
-  jobName: string;
+  taskName: string;
 
   constructor({
     githubApp,
@@ -50,7 +50,7 @@ module.exports = class GithubReporter {
     repo,
     sha,
     number,
-    jobName,
+    taskName,
   }: {
     githubApp: GithubApp,
     installationId: string,
@@ -58,7 +58,7 @@ module.exports = class GithubReporter {
     repo: string,
     sha: string,
     number?: ?string,
-    jobName: string,
+    taskName: string,
   }) {
     this.githubApp = githubApp;
     this.installationId = installationId;
@@ -66,11 +66,11 @@ module.exports = class GithubReporter {
     this.repo = repo;
     this.sha = sha;
     this.number = number;
-    this.jobName = jobName;
+    this.taskName = taskName;
   }
 
   async setStatus(status: ResultStatus): Promise<mixed> {
-    const { githubApp, installationId, owner, repo, sha, jobName } = this;
+    const { githubApp, installationId, owner, repo, sha, taskName } = this;
 
     const stateForStatus = {
       waiting: "pending",
@@ -81,12 +81,12 @@ module.exports = class GithubReporter {
       canceled: "failure",
     }[status];
     const descriptionForStatus = {
-      waiting: `QuinCI - '${jobName}' waiting in queue`,
-      running: `QuinCI - '${jobName}' running`,
-      success: `QuinCI - '${jobName}' ran successfully`,
-      failure: `QuinCI - '${jobName}' failed`,
-      error: `QuinCI - '${jobName}' errored`,
-      canceled: `QuinCI - '${jobName}' was canceled`,
+      waiting: `QuinCI - '${taskName}' waiting in queue`,
+      running: `QuinCI - '${taskName}' running`,
+      success: `QuinCI - '${taskName}' ran successfully`,
+      failure: `QuinCI - '${taskName}' failed`,
+      error: `QuinCI - '${taskName}' errored`,
+      canceled: `QuinCI - '${taskName}' was canceled`,
     }[status];
 
     if (stateForStatus == null || descriptionForStatus == null) {
@@ -100,31 +100,31 @@ module.exports = class GithubReporter {
       sha,
       state: stateForStatus,
       description: descriptionForStatus,
-      context: `quinci:${jobName}`,
+      context: `quinci:${taskName}`,
     });
   }
 
   _commentContent(input: CommentArg): string {
-    const { jobName } = this;
+    const { taskName } = this;
 
     switch (input.status) {
       case "waiting": {
-        return commentTemplates.waiting(jobName);
+        return commentTemplates.waiting(taskName);
       }
       case "running": {
-        return commentTemplates.running(jobName);
+        return commentTemplates.running(taskName);
       }
       case "success": {
-        return commentTemplates.success(jobName, input.output);
+        return commentTemplates.success(taskName, input.output);
       }
       case "failure": {
-        return commentTemplates.failure(jobName, input.output, input.code);
+        return commentTemplates.failure(taskName, input.output, input.code);
       }
       case "error": {
-        return commentTemplates.error(jobName, input.error);
+        return commentTemplates.error(taskName, input.error);
       }
       case "canceled": {
-        return commentTemplates.canceled(jobName);
+        return commentTemplates.canceled(taskName);
       }
       default: {
         (input.status: empty);

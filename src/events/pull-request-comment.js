@@ -20,7 +20,7 @@ module.exports = (function setupEvent({
       const number = payload.issue.number;
       log = makeLogger(`${repo}/${owner} #${number}: `);
 
-      const jobName = "pull-request";
+      const taskName = "pull-request";
 
       log("Received a issue_comment event");
 
@@ -72,16 +72,16 @@ module.exports = (function setupEvent({
         repo,
         sha,
         number,
-        jobName,
+        taskName,
       });
 
-      const queue = queues.getQueueForJobName(jobName);
-      log(`Queue concurrency for '${jobName}' is ${queue.getConcurrency()}.`);
+      const queue = queues.getQueueFortaskName(taskName);
+      log(`Queue concurrency for '${taskName}' is ${queue.getConcurrency()}.`);
       log(
-        `There are ${queue.getRunning()} job(s) running in the '${jobName}' queue.`
+        `There are ${queue.getRunning()} job(s) running in the '${taskName}' queue.`
       );
       log(
-        `There are ${queue.getWaiting()} job(s) waiting in the '${jobName}' queue.`
+        `There are ${queue.getWaiting()} job(s) waiting in the '${taskName}' queue.`
       );
 
       if (!queue.canRunNow()) {
@@ -93,13 +93,13 @@ module.exports = (function setupEvent({
       }
 
       const job = new Job({
-        jobName,
+        taskName,
         commitSha: sha,
         remote: prResponse.data.head.repo.ssh_url,
       });
 
       job.on("running", async () => {
-        log(`Running job '${jobName}'`);
+        log(`Running job for '${taskName}'`);
         log("Setting status to running");
         await reporter.setStatus("running");
 
@@ -108,7 +108,7 @@ module.exports = (function setupEvent({
       });
 
       job.on("success", async () => {
-        log(`Job '${jobName}' succeeded`);
+        log(`Job for '${taskName}' succeeded`);
         log("Setting status to success");
         await reporter.setStatus("success");
 
@@ -120,7 +120,7 @@ module.exports = (function setupEvent({
       });
 
       job.on("failure", async () => {
-        log(`Job '${jobName}' failed`);
+        log(`Job for '${taskName}' failed`);
         log("Setting status to failure");
         await reporter.setStatus("failure");
 
@@ -133,7 +133,7 @@ module.exports = (function setupEvent({
       });
 
       job.on("error", async (error) => {
-        log(`Job '${jobName}' errored: ${error.stack}`);
+        log(`Job for '${taskName}' errored: ${error.stack}`);
         log("Setting status to error");
         await reporter.setStatus("error");
 
@@ -142,7 +142,7 @@ module.exports = (function setupEvent({
       });
 
       job.on("canceled", async () => {
-        log(`Job '${jobName}' was canceled`);
+        log(`Job for '${taskName}' was canceled`);
         log("Setting status to canceled");
         await reporter.setStatus("canceled");
 
@@ -151,7 +151,7 @@ module.exports = (function setupEvent({
       });
 
       const { code } = await queue.add(job);
-      log(`Job '${jobName}' finished with status code ${code}`);
+      log(`Job for '${taskName}' finished with status code ${code}`);
     } catch (error) {
       if (log == null) {
         log = makeLogger(`Failed event handler: `);

@@ -99,22 +99,24 @@ module.exports = function statusPage(
 
   res.statusCode = 200;
   const templateData = {
-    queues: appContext.queues.getAllJobsForQueues().map(({ jobName, jobs }) => {
-      return {
-        name: jobName,
-        // Reverse jobs here so that most recent jobs are at the top.
-        jobs: [...jobs].reverse().map((job) => ({
-          uid: job.uid,
-          commitSha: job.commitSha,
-          status: job.status,
-          running: job.status === "running",
-          code: job.runResult.code,
-          selected: urlObj.query === job.uid,
-          output: job.runResult.output,
-          createdAt: job.createdAt.toString(),
-        })),
-      };
-    }),
+    queues: appContext.queues
+      .getAllJobsForQueues()
+      .map(({ taskName, jobs }) => {
+        return {
+          name: taskName,
+          // Reverse jobs here so that most recent jobs are at the top.
+          jobs: [...jobs].reverse().map((job) => ({
+            uid: job.uid,
+            commitSha: job.commitSha,
+            status: job.status,
+            running: job.status === "running",
+            code: job.runResult.code,
+            selected: urlObj.query === job.uid,
+            output: job.runResult.output,
+            createdAt: job.createdAt.toString(),
+          })),
+        };
+      }),
   };
   res.write(template(templateData));
   res.end();
