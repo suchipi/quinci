@@ -9,7 +9,7 @@ module.exports = (function setupEvent({
   makeLogger,
 }) {
   webhookHandler.on("push", async (event) => {
-    const { app, queues } = appContext;
+    const { githubApp, queues } = appContext;
     // $FlowFixMe
     let log: (msg: string) => void;
     // $FlowFixMe
@@ -31,7 +31,7 @@ module.exports = (function setupEvent({
       }
 
       const reporter = new GithubReporter({
-        app,
+        githubApp,
         installationId: payload.installation.id,
         owner,
         repo,

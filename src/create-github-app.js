@@ -4,13 +4,11 @@ const fs = require("fs");
 const path = require("path");
 const githubApp = require("github-app");
 
-export type App = any;
+export type GithubApp = any;
 
-module.exports = function createApp(config: NormalizedConfig): App {
-  const app = githubApp({
+module.exports = function createGithubApp(config: NormalizedConfig): GithubApp {
+  return githubApp({
     id: config.appId,
     cert: fs.readFileSync(path.resolve(process.cwd(), config.appCert)),
   });
-
-  return app;
 };

@@ -9,7 +9,7 @@ module.exports = (function setupEvent({
   makeLogger,
 }) {
   webhookHandler.on("pull_request", async ({ payload }) => {
-    const { app, queues } = appContext;
+    const { githubApp, queues } = appContext;
     // $FlowFixMe
     let log: (msg: string) => void;
     // $FlowFixMe
@@ -29,7 +29,7 @@ module.exports = (function setupEvent({
         return;
       }
 
-      const github = await app.asInstallation(payload.installation.id);
+      const github = await githubApp.asInstallation(payload.installation.id);
 
       const username = payload.sender.login;
       log(`Checking if ${username} has write access`);
@@ -46,7 +46,7 @@ module.exports = (function setupEvent({
       }
 
       reporter = new GithubReporter({
-        app,
+        githubApp,
         installationId: payload.installation.id,
         owner,
         repo,

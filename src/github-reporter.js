@@ -1,5 +1,5 @@
 /* @flow */
-import type { App } from "./create-app";
+import type { GithubApp } from "./create-github-app";
 const commentTemplates = require("./comment-templates");
 
 type ResultStatus =
@@ -35,7 +35,7 @@ type CommentArg =
     |};
 
 module.exports = class GithubReporter {
-  app: App;
+  githubApp: GithubApp;
   installationId: string;
   owner: string;
   repo: string;
@@ -44,7 +44,7 @@ module.exports = class GithubReporter {
   jobName: string;
 
   constructor({
-    app,
+    githubApp,
     installationId,
     owner,
     repo,
@@ -52,7 +52,7 @@ module.exports = class GithubReporter {
     number,
     jobName,
   }: {
-    app: App,
+    githubApp: GithubApp,
     installationId: string,
     owner: string,
     repo: string,
@@ -60,7 +60,7 @@ module.exports = class GithubReporter {
     number?: ?string,
     jobName: string,
   }) {
-    this.app = app;
+    this.githubApp = githubApp;
     this.installationId = installationId;
     this.owner = owner;
     this.repo = repo;
@@ -70,7 +70,7 @@ module.exports = class GithubReporter {
   }
 
   async setStatus(status: ResultStatus): Promise<mixed> {
-    const { app, installationId, owner, repo, sha, jobName } = this;
+    const { githubApp, installationId, owner, repo, sha, jobName } = this;
 
     const stateForStatus = {
       waiting: "pending",
@@ -93,7 +93,7 @@ module.exports = class GithubReporter {
       return Promise.reject(new Error("Invalid status provided: " + status));
     }
 
-    const github = await app.asInstallation(installationId);
+    const github = await githubApp.asInstallation(installationId);
     return github.repos.createStatus({
       owner,
       repo,
@@ -134,9 +134,9 @@ module.exports = class GithubReporter {
   }
 
   async commitComment(input: CommentArg): Promise<mixed> {
-    const { app, installationId, owner, repo, sha } = this;
+    const { githubApp, installationId, owner, repo, sha } = this;
     const body = this._commentContent(input);
-    const github = await app.asInstallation(installationId);
+    const github = await githubApp.asInstallation(installationId);
     await github.repos.createCommitComment({
       owner,
       repo,
@@ -146,9 +146,9 @@ module.exports = class GithubReporter {
   }
 
   async issueComment(input: CommentArg): Promise<mixed> {
-    const { app, installationId, owner, repo, number } = this;
+    const { githubApp, installationId, owner, repo, number } = this;
     const body = this._commentContent(input);
-    const github = await app.asInstallation(installationId);
+    const github = await githubApp.asInstallation(installationId);
     await github.issues.createComment({
       owner,
       repo,
