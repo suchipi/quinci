@@ -3,6 +3,7 @@ import type { NormalizedConfig } from "./normalize-config";
 const Queue = require("./queue");
 const Job = require("./job");
 
+// An object which contains all the queues in the app.
 module.exports = class Queues {
   _queuesMap: Map<string, Queue>;
 
@@ -26,15 +27,17 @@ module.exports = class Queues {
       return newQueue;
     }
   }
+
   getAllJobsForQueues(): Array<{ jobName: string, jobs: Array<Job> }> {
     return Array.from(this._queuesMap).map(([jobName, queue]) => ({
       jobName,
       jobs: queue.getJobs(),
     }));
   }
+
   getAllJobsByUid(): { [uid: string]: Job } {
     const jobs = {};
-    Array.from(this._queuesMap).forEach(([jobName, queue]) => {
+    this._queuesMap.forEach((queue, jobName) => {
       queue.getJobs().forEach((job) => {
         jobs[job.uid] = job;
       });

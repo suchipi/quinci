@@ -28,14 +28,47 @@ onExit(() => {
   }
 });
 
+// A Job represents a task to be run for a given git commit.
+//
+// It is constructed with a Git remote URL, a commit sha, and the name of a job
+// to execute. When you call its `run` method, it will clone the repo at that
+// URL, cd into the repo, check out the commit sha, and then execute
+// `./quinci/<job name>`.
+//
+// A Job is also an EventEmitter; it emits the following events when its status
+// changes:
+//
+// `running` - emitted when the job starts running
+// `success` - emitted when the job finishes running and it ran successfully
+//             (zero exit code).
+// `failure` - emitted when the job finishes running and it failed
+//             (nonzero exit code).
+// `error` - emitted when a JavaScript exception is thrown during job execution.
+//            The error is passed to the event listener callback.
+// `canceled` - emitted when someone calls the `cancel()` method on the job.
+//
+// At any time, you can check a job's `runResult` property for information
+// about the job.
 module.exports = class Job extends EventEmitter {
+  // Every job has a uid, which is universally unique and can be used to find
+  // the job (See `Queues#getAllJobsByUid()`).
   uid: string;
+
+  // The git remote url that should be cloned.
   remote: string;
+
+  // The git commit sha that should be checked out.
   commitSha: string;
+
+  // The name of the binary in the `quinci` folder in the repo that should be
+  // executed.
   jobName: string;
+
   status: JobStatus;
   runResult: JobRunResult;
   createdAt: Date;
+
+  // Call this to cancel the job.
   cancel: () => void;
   _canceled: boolean;
 
@@ -66,7 +99,7 @@ module.exports = class Job extends EventEmitter {
     this._canceled = false;
   }
 
-  setStatus(newStatus: JobStatus, maybeError?: Error) {
+  _setStatus(newStatus: JobStatus, maybeError?: Error) {
     this.status = newStatus;
     this.emit(newStatus, maybeError);
   }
@@ -99,13 +132,13 @@ module.exports = class Job extends EventEmitter {
       }
     );
     runningChildren.add(child);
-    this.setStatus("running");
+    this._setStatus("running");
 
     return new Promise((resolve, reject) => {
       this.cancel = () => {
         this._canceled = true;
         child.kill("SIGKILL");
-        this.setStatus("canceled");
+        this._setStatus("canceled");
         resolve(this.runResult);
       };
 
@@ -143,15 +176,15 @@ module.exports = class Job extends EventEmitter {
         runningChildren.delete(child);
         this.runResult.code = code;
         if (code === 0) {
-          this.setStatus("success");
+          this._setStatus("success");
         } else {
-          this.setStatus("failure");
+          this._setStatus("failure");
         }
         shell.rm("-rf", jobDir);
         resolve(this.runResult);
       });
     }).catch((err) => {
-      this.setStatus("error", err);
+      this._setStatus("error", err);
       throw err;
     });
   }
