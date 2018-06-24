@@ -1,4 +1,4 @@
-![quinCI logo](https://cdn.rawgit.com/suchipi/quinci/master/logo/quinCI.svg)
+<p align="center"><img width="30%" src="https://cdn.rawgit.com/suchipi/quinci/master/logo/quinCI.svg"/></p>
 
 quinCI is a self-hosted, minimal GitHub CI server that runs scripts in response to GitHub webhook events.
 
