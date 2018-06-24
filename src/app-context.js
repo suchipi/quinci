@@ -1,9 +1,8 @@
 /* @flow */
 import type { GithubApp } from "./create-github-app";
-import type { Queues } from "./create-queues";
 import type { NormalizedConfig } from "./normalize-config";
 const createGithubApp = require("./create-github-app");
-const createQueues = require("./create-queues");
+const Queues = require("./queues");
 
 module.exports = class AppContext {
   githubApp: GithubApp;
@@ -13,6 +12,6 @@ module.exports = class AppContext {
   constructor(config: NormalizedConfig) {
     this.config = config;
     this.githubApp = createGithubApp(config);
-    this.queues = createQueues(config);
+    this.queues = new Queues(config);
   }
 };
