@@ -2,32 +2,15 @@
 import type { NormalizedConfig } from "./normalize-config";
 
 const http = require("http");
-const debug = require("debug")("quinci:http");
 const AppContext = require("./app-context");
-const createHandler = require("./create-handler");
+const createHttpMiddleware = require("./create-http-middleware");
 
 module.exports = function runQuinCI(config: NormalizedConfig): Promise<void> {
   const appContext = new AppContext(config);
-  const handler = createHandler(appContext);
+  const httpMiddleware = createHttpMiddleware(appContext);
 
   return new Promise((resolve) => {
-    const server = http.createServer(function(req, res) {
-      try {
-        handler(req, res, (err) => {
-          res.statusCode = 400;
-          res.end("400 Bad Request");
-        });
-      } catch (err) {
-        debug(
-          "Error in HTTP request handler: " + (err && err.stack)
-            ? err.stack
-            : err
-        );
-        res.statusCode = 500;
-        res.end("500 Internal Server Error");
-      }
-    });
-
+    const server = http.createServer(httpMiddleware);
     server.listen(config.port, resolve);
   });
 };

@@ -1,10 +1,14 @@
 /* @flow */
-import type { SetupEventFunction } from "../create-handler";
+import type { SetupEventFunction } from "../create-webhook-handler";
 const Job = require("../job");
 const GithubReporter = require("../github-reporter");
 
-module.exports = (function setupEvent({ handler, appContext, makeLogger }) {
-  handler.on("commit_comment", async ({ payload }) => {
+module.exports = (function setupEvent({
+  webhookHandler,
+  appContext,
+  makeLogger,
+}) {
+  webhookHandler.on("commit_comment", async ({ payload }) => {
     const { app, queues } = appContext;
     // $FlowFixMe
     let log: (msg: string) => void;
