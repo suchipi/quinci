@@ -5,16 +5,16 @@ const MAX_COMMENT_SIZE = 65536;
 
 module.exports = {
   waiting(taskName: string): string {
-    return `🕑 QuinCI will run '${taskName}' once other '${taskName}' jobs finish.\n`;
+    return `🕑 quinCI will run '${taskName}' once other '${taskName}' jobs finish.\n`;
   },
   running(taskName: string): string {
-    return `🕑 QuinCI is running '${taskName}'...\n`;
+    return `🕑 quinCI is running '${taskName}'...\n`;
   },
   success(taskName: string, rawOutput: string): string {
     const output = stripAnsi(rawOutput);
 
     const header =
-      `✅ QuinCI run of '${taskName}' passed.\n` +
+      `✅ quinCI run of '${taskName}' passed.\n` +
       "<details>\n" +
       "<summary>Log output:</summary>\n" +
       "\n``````\n";
@@ -31,7 +31,7 @@ module.exports = {
     const output = stripAnsi(rawOutput);
 
     const header =
-      `❌ QuinCI run of '${taskName}' failed. Exit code was ${code}.\n` +
+      `❌ quinCI run of '${taskName}' failed. Exit code was ${code}.\n` +
       "<details>\n" +
       "<summary>Log output:</summary>\n" +
       "\n``````\n";
@@ -46,7 +46,7 @@ module.exports = {
   },
   error(taskName: string, error: Error): string {
     const header =
-      `❌ QuinCI run of '${taskName}' errored.\n` + "Error:\n" + "\n``````\n";
+      `❌ quinCI run of '${taskName}' errored.\n` + "Error:\n" + "\n``````\n";
     const body = error.stack.trim();
     const footer = "\n``````\n" + "</details>";
 
@@ -57,6 +57,6 @@ module.exports = {
     );
   },
   canceled(taskName: string) {
-    return `🚫 QuinCI run of '${taskName}' was canceled.`;
+    return `🚫 quinCI run of '${taskName}' was canceled.`;
   },
 };

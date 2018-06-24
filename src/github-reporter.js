@@ -81,12 +81,12 @@ module.exports = class GithubReporter {
       canceled: "failure",
     }[status];
     const descriptionForStatus = {
-      waiting: `QuinCI - '${taskName}' waiting in queue`,
-      running: `QuinCI - '${taskName}' running`,
-      success: `QuinCI - '${taskName}' ran successfully`,
-      failure: `QuinCI - '${taskName}' failed`,
-      error: `QuinCI - '${taskName}' errored`,
-      canceled: `QuinCI - '${taskName}' was canceled`,
+      waiting: `quinCI - '${taskName}' waiting in queue`,
+      running: `quinCI - '${taskName}' running`,
+      success: `quinCI - '${taskName}' ran successfully`,
+      failure: `quinCI - '${taskName}' failed`,
+      error: `quinCI - '${taskName}' errored`,
+      canceled: `quinCI - '${taskName}' was canceled`,
     }[status];
 
     if (stateForStatus == null || descriptionForStatus == null) {

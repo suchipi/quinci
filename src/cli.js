@@ -30,5 +30,5 @@ debug("Config: " + JSON.stringify(config, null, 2));
 
 runDumbCI(config).then(() => {
   const version = require("../package.json").version;
-  console.log(`QuinCI ${version} is running`);
+  console.log(`quinCI ${version} is running`);
 });

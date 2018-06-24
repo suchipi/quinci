@@ -1,1 +1,1 @@
-QuinCI logo created by [Maki](https://maki.cat)
+quinCI logo created by [Maki](https://maki.cat)

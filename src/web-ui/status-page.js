@@ -21,7 +21,7 @@ const template: ({
   <!DOCTYPE html>
   <html>
     <head>
-      <title>QuinCI Job Status</title>
+      <title>quinCI Job Status</title>
       <style>
         ul {
           list-style-type: none;
@@ -51,7 +51,7 @@ const template: ({
       </style>
     </head>
     <body>
-      <h1>QuinCI Job Status</h1>
+      <h1>quinCI Job Status</h1>
 
       {{#each queues}}
         <article id="queue-{{this.name}}">
