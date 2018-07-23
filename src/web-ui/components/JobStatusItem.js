@@ -112,6 +112,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
             <div
               style={{
                 display: "flex",
+                justifyContent: "flex-end",
                 alignItems: "flex-end",
               }}
             >
