@@ -2,22 +2,42 @@
 const React = require("react");
 const AppContext = require("../../app-context");
 const Page = require("./Page");
+const JobStatusItem = require("./JobStatusItem");
+const Material = require("./Material");
+const Padding = require("./Padding");
 
 type Props = {
   appContext: AppContext,
   selectedJobUid: ?string,
 };
 
-module.exports = class App extends React.Component<Props> {
+module.exports = class StatusPage extends React.Component<Props> {
   render() {
     const { appContext, selectedJobUid } = this.props;
 
     return (
       <Page title="quinCI Status">
         {appContext.queues.getAllJobsForQueues().map(({ taskName, jobs }) => (
-          <article key={taskName} id={`queue-${taskName}`}>
-            <a href={`/#queue-${taskName}`}>
-              <h2>{taskName}</h2>
+          <Material
+            tagName="article"
+            key={taskName}
+            id={`queue-${taskName}`}
+            style={{
+              overflow: "hidden",
+              marginBottom: 16,
+            }}
+          >
+            <a
+              href={`/#queue-${taskName}`}
+              style={{
+                backgroundColor: "#f44336",
+                color: "white",
+                display: "block",
+              }}
+            >
+              <Padding x={16} y={8}>
+                <h2>{taskName}</h2>
+              </Padding>
             </a>
             {jobs.length > 0 ? (
               <ul
@@ -26,55 +46,21 @@ module.exports = class App extends React.Component<Props> {
                   padding: "0",
                 }}
               >
-                {jobs.map((job) => (
-                  <li
+                {jobs.map((job, index) => (
+                  <JobStatusItem
                     key={job.uid}
-                    id={`job-${job.uid}`}
-                    style={{
-                      backgroundColor: {
-                        waiting: "#f5f5f5",
-                        canceled: "#f5f5f5",
-                        running: "#fffbd3",
-                        success: "#dffbdf",
-                        failure: "#ffe6e6",
-                        error: "#ffe6e6",
-                      }[job.status],
-                      padding: "1em",
-                      margin: "1em 0",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    <a href={`/?${job.uid}#job-${job.uid}`}>
-                      <h3 style={{ margin: "0" }}>
-                        {job.createdAt.toString()}
-                      </h3>
-                    </a>
-                    <p style={{ margin: "0.5em 0" }}>
-                      Git SHA: {job.commitSha}
-                    </p>
-                    <p style={{ margin: "0.5em 0" }}>Status: {job.status}</p>
-                    {job.status === "running" ? (
-                      <p style={{ margin: "0.5em 0" }}>
-                        <a href={`/cancel?jobId=${job.uid}`}>Cancel Job</a>
-                      </p>
-                    ) : (
-                      <p style={{ margin: "0.5em 0" }}>
-                        Exit Code: {job.runResult.code}
-                      </p>
-                    )}
-                    <details open={selectedJobUid === job.uid}>
-                      <summary>Output</summary>
-                      <pre>
-                        <code>{job.runResult.output}</code>
-                      </pre>
-                    </details>
-                  </li>
+                    job={job}
+                    isSelected={job.uid === selectedJobUid}
+                    withDivider={jobs[index + 1] != null}
+                  />
                 ))}
               </ul>
             ) : (
-              "No jobs yet"
+              <Padding x={16} y={8}>
+                No jobs have run in this queue yet.
+              </Padding>
             )}
-          </article>
+          </Material>
         ))}
       </Page>
     );

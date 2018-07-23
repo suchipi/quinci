@@ -12,10 +12,7 @@ module.exports = class AppBar extends React.Component<Props> {
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
           justifyContent: "center",
-          backgroundColor: "rgb(217, 227, 255)",
-          color: "white",
         }}
       >
         <a style={{ padding: "12px", fontSize: "0" }} href={titleHref}>

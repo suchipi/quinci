@@ -27,7 +27,7 @@ const defaultQueueConcurrency = {
 };
 
 function parseQueueConcurrencyString(configStr: string) {
-  let queueConcurrencyObject = Object.assign({}, defaultQueueConcurrency);
+  let queueConcurrencyObject = { ...defaultQueueConcurrency };
 
   if (configStr) {
     try {

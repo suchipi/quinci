@@ -18,17 +18,39 @@ module.exports = class Page extends React.Component<Props> {
           {title ? <title>{title}</title> : null}
           <style>
             {`
-              body, html {
-                margin: 0;
+              body {
+                background-color: rgb(217, 227, 255);
+                font-family: 'Roboto', sans-serif;
               }
+
               * {
                 box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+              }
+
+              a {
+                text-decoration: none;
+              }
+
+              a:hover {
+                text-decoration: underline;
               }
             `}
           </style>
+          <link
+            href="https://fonts.googleapis.com/css?family=Roboto"
+            rel="stylesheet"
+          />
         </Helmet>
         <AppBar />
-        <main style={{ maxWidth: "960px", padding: "5px", margin: "0 auto" }}>
+
+        <main
+          style={{
+            maxWidth: "960px",
+            margin: "0 auto",
+          }}
+        >
           {children}
         </main>
       </>

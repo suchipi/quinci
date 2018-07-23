@@ -19,7 +19,7 @@ module.exports = class JobShim extends EventEmitter {
 
     Object.assign(this, attrs);
     if (attrs.runResult != null) {
-      this.runResult = Object.assign({}, defaultRunResult, attrs.runResult);
+      this.runResult = { ...defaultRunResult, ...attrs.runResult };
     } else {
       this.runResult = defaultRunResult;
     }

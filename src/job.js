@@ -123,7 +123,8 @@ module.exports = class Job extends EventEmitter {
       ],
       {
         cwd: jobDir,
-        env: Object.assign({}, process.env, {
+        env: {
+          ...process.env,
           CI: "true",
           QUINCI_REMOTE: remote,
           QUINCI_TASK_NAME: taskName,
@@ -131,7 +132,7 @@ module.exports = class Job extends EventEmitter {
           QUINCI_RUN_DIR: runDir,
           QUINCI_LOG_FILE: logFile,
           QUINCI_JOB_UID: this.uid,
-        }),
+        },
       }
     );
     runningChildren.add(child);
