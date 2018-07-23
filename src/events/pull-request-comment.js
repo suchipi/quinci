@@ -75,7 +75,7 @@ module.exports = (function setupEvent({
         taskName,
       });
 
-      const queue = queues.getQueueFortaskName(taskName);
+      const queue = queues.getQueueForTaskName(taskName);
       log(`Queue concurrency for '${taskName}' is ${queue.getConcurrency()}.`);
       log(
         `There are ${queue.getRunning()} job(s) running in the '${taskName}' queue.`

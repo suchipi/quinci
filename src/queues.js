@@ -17,7 +17,7 @@ module.exports = class Queues {
     });
   }
 
-  getQueueFortaskName(taskName: string): Queue {
+  getQueueForTaskName(taskName: string): Queue {
     const queue = this._queuesMap.get(taskName);
     if (queue) {
       return queue;
