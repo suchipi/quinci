@@ -67,6 +67,15 @@ storiesOf("StatusPage", module).add("default", () => {
   masterQueue.add(
     new Job({
       taskName: "master",
+      status: "canceled",
+      runResult: {
+        output: "Running............",
+      },
+    })
+  );
+  masterQueue.add(
+    new Job({
+      taskName: "master",
       status: "success",
       runResult: {
         code: 0,

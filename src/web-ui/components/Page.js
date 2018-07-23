@@ -46,12 +46,25 @@ module.exports = class Page extends React.Component<Props> {
               }
 
               details .details-icon {
-                transform: rotate(0deg);
                 transition: transform 100ms ease-in-out;
               }
 
               details[open] .details-icon {
                 transform: rotate(90deg);
+              }
+
+              details pre {
+                transform: scaleY(0);
+                transform-origin: top;
+                transition: transform 100ms ease-in-out;
+              }
+
+              details[open] pre {
+                transform: scaleY(1);
+              }
+
+              svg {
+                overflow: visible;
               }
             `}
           </style>
