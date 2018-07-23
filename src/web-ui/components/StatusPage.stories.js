@@ -68,6 +68,9 @@ storiesOf("StatusPage", module).add("default", () => {
     new Job({
       taskName: "master",
       status: "canceled",
+      createdAt: new Date(Date.now() - 6 * 60 * 1000),
+      startedAt: new Date(Date.now() - 6 * 60 * 1000),
+      finishedAt: new Date(Date.now() - 5.5 * 60 * 1000),
       runResult: {
         output: "Running............",
       },
