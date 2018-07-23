@@ -67,6 +67,7 @@ module.exports = class Job extends EventEmitter {
   status: JobStatus;
   runResult: JobRunResult;
   createdAt: Date;
+  finishedAt: ?Date;
 
   // Call this to cancel the job.
   cancel: () => void;
@@ -94,8 +95,12 @@ module.exports = class Job extends EventEmitter {
       output: "",
     };
     this.createdAt = new Date();
+    this.finishedAt = null;
 
-    this.cancel = () => {};
+    this.cancel = () => {
+      this._canceled = true;
+      this._setStatus("canceled");
+    };
     this._canceled = false;
   }
 
@@ -105,6 +110,10 @@ module.exports = class Job extends EventEmitter {
   }
 
   run(): Promise<JobRunResult> {
+    if (this._canceled) {
+      return Promise.resolve(this.runResult);
+    }
+
     const { remote, commitSha, taskName } = this;
     const now = Date.now();
     const jobDir = `jobs/${taskName}/${commitSha}`;
@@ -170,6 +179,7 @@ module.exports = class Job extends EventEmitter {
           return;
         }
         runningChildren.delete(child);
+        this.finishedAt = new Date();
         reject(err);
       });
 
@@ -178,6 +188,7 @@ module.exports = class Job extends EventEmitter {
           return;
         }
         runningChildren.delete(child);
+        this.finishedAt = new Date();
         this.runResult.code = code;
         if (code === 0) {
           this._setStatus("success");

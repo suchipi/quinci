@@ -79,7 +79,11 @@ module.exports = class JobStatusItem extends React.Component<Props> {
     }[job.status];
 
     const jobStatusLabel = {
-      waiting: "Waiting",
+      waiting: (
+        <span>
+          Waiting - <a href={`/cancel?jobId=${job.uid}`}>Cancel</a>
+        </span>
+      ),
       canceled: "Canceled",
       running: (
         <span>
