@@ -79,6 +79,8 @@ module.exports = class JobStatusItem extends React.Component<Props> {
     }[job.status];
 
     const createdAtRelative = capitalize(moment(job.createdAt).fromNow());
+    const hasOutput = job.runResult.output.trim().length > 0;
+    const canCancel = job.status === "running";
 
     return (
       <li
@@ -107,8 +109,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
             />
           </p>
 
-          {job.runResult.output.trim().length > 0 ||
-          job.status === "running" ? (
+          {hasOutput || canCancel ? (
             <div
               style={{
                 display: "flex",
@@ -116,10 +117,13 @@ module.exports = class JobStatusItem extends React.Component<Props> {
                 alignItems: "flex-end",
               }}
             >
-              {job.runResult.output.trim().length > 0 ? (
+              {hasOutput ? (
                 <details
                   open={isSelected}
-                  style={{ flexGrow: 1, padding: "8px 0" }}
+                  style={{
+                    flexGrow: 1,
+                    padding: canCancel ? "8px 0" : "",
+                  }}
                 >
                   <summary>Output</summary>
                   <Padding top={8}>
