@@ -21,6 +21,9 @@ module.exports = class Page extends React.Component<Props> {
               body, html {
                 margin: 0;
               }
+              * {
+                box-sizing: border-box;
+              }
             `}
           </style>
         </Helmet>

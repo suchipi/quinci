@@ -11,15 +11,19 @@ module.exports = class AppBar extends React.Component<Props> {
     return (
       <div
         style={{
-          backgroundColor: "#f44336",
-          padding: "12px",
-          fontSize: "32px",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
+          backgroundColor: "rgb(217, 227, 255)",
           color: "white",
         }}
       >
-        <div style={{ maxWidth: "960px", padding: "5px", margin: "0 auto" }}>
-          <a href={titleHref}>quinCI</a>
-        </div>
+        <a style={{ padding: "12px", fontSize: "0" }} href={titleHref}>
+          <img
+            style={{ height: "48px", padding: "0" }}
+            src="/assets/logo.svg"
+          />
+        </a>
       </div>
     );
   }
