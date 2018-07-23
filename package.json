@@ -9,7 +9,6 @@
     "debug": "^3.1.0",
     "github-app": "^3.2.0",
     "github-webhook-handler": "^0.7.1",
-    "handlebars": "^4.0.11",
     "promise-queue": "^2.2.5",
     "shelljs": "^0.8.1",
     "signal-exit": "^3.0.2",
@@ -21,19 +20,32 @@
     "@babel/cli": "^7.0.0-beta.46",
     "@babel/core": "^7.0.0-beta.46",
     "@babel/plugin-transform-flow-strip-types": "^7.0.0-beta.46",
+    "@babel/preset-react": "^7.0.0-beta.54",
+    "@storybook/addon-actions": "^3.4.8",
+    "@storybook/addon-links": "^3.4.8",
+    "@storybook/addons": "^3.4.8",
+    "@storybook/react": "^3.4.8",
+    "babel-core": "^7.0.0-0",
     "babel-eslint": "^8.2.3",
+    "babel-runtime": "^6.26.0",
     "eslint": "^4.19.1",
     "eslint-config-unobtrusive": "^1.2.2",
     "eslint-plugin-flowtype": "^2.46.3",
     "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-react": "^7.10.0",
     "flow-bin": "^0.72.0",
+    "memory-fs": "^0.4.1",
     "nodemon": "^1.17.3",
     "prettier": "^1.12.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "rimraf": "^2.6.2"
   },
   "scripts": {
     "build": "rimraf dist/* && babel src --out-dir dist",
     "build:watch": "babel --watch src --out-dir dist",
-    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt"
+    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   }
 }
