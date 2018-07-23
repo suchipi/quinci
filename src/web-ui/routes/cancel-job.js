@@ -1,6 +1,6 @@
 /* @flow */
 import type { IncomingMessage, ServerResponse } from "http";
-const AppContext = require("../app-context");
+const AppContext = require("../../app-context");
 
 const url = require("url");
 const querystring = require("querystring");

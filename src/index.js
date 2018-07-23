@@ -5,7 +5,7 @@ const http = require("http");
 const AppContext = require("./app-context");
 const createHttpMiddleware = require("./create-http-middleware");
 
-module.exports = function runquinCI(config: NormalizedConfig): Promise<void> {
+module.exports = function runQuinCI(config: NormalizedConfig): Promise<void> {
   const appContext = new AppContext(config);
   const httpMiddleware = createHttpMiddleware(appContext);
 

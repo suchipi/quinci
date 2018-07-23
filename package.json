@@ -10,6 +10,9 @@
     "github-app": "^3.2.0",
     "github-webhook-handler": "^0.7.1",
     "promise-queue": "^2.2.5",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-helmet": "^5.2.0",
     "shelljs": "^0.8.1",
     "signal-exit": "^3.0.2",
     "strip-ansi": "^4.0.0",
@@ -37,8 +40,6 @@
     "memory-fs": "^0.4.1",
     "nodemon": "^1.17.3",
     "prettier": "^1.12.1",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
     "rimraf": "^2.6.2"
   },
   "scripts": {

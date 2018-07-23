@@ -1,6 +1,7 @@
 /* @flow */
 const React = require("react");
 const AppContext = require("../../app-context");
+const Page = require("./Page");
 
 type Props = {
   appContext: AppContext,
@@ -12,9 +13,7 @@ module.exports = class App extends React.Component<Props> {
     const { appContext, selectedJobUid } = this.props;
 
     return (
-      <>
-        <h1>quinCI Job Status</h1>
-
+      <Page title="quinCI Status">
         {appContext.queues.getAllJobsForQueues().map(({ taskName, jobs }) => (
           <article key={taskName} id={`queue-${taskName}`}>
             <a href={`/#queue-${taskName}`}>
@@ -77,7 +76,7 @@ module.exports = class App extends React.Component<Props> {
             )}
           </article>
         ))}
-      </>
+      </Page>
     );
   }
 };

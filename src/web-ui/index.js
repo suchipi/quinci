@@ -2,8 +2,8 @@
 import type { IncomingMessage, ServerResponse } from "http";
 const url = require("url");
 const AppContext = require("../app-context");
-const statusPage = require("./status-page");
-const cancelJob = require("./cancel-job");
+const statusPage = require("./routes/status-page");
+const cancelJob = require("./routes/cancel-job");
 
 module.exports = function webUI(
   appContext: AppContext,

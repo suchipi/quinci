@@ -2,9 +2,9 @@
 import type { IncomingMessage, ServerResponse } from "http";
 const url = require("url");
 const React = require("react");
-const ReactDOMServer = require("react-dom/server");
-const AppContext = require("../app-context");
-const StatusPage = require("./components/StatusPage");
+const renderReact = require("../render-react");
+const AppContext = require("../../app-context");
+const StatusPage = require("./../components/StatusPage");
 
 module.exports = function statusPage(
   appContext: AppContext,
@@ -15,22 +15,9 @@ module.exports = function statusPage(
   const selectedJobUid = urlObj.query;
 
   res.statusCode = 200;
-  const head = `
-    <title>quinCI Job Status</title>
-  `;
-  const body = ReactDOMServer.renderToString(
+  const html = renderReact(
     <StatusPage appContext={appContext} selectedJobUid={selectedJobUid} />
   );
-
-  res.write(`
-    <!DOCTYPE html>  <html>
-      <head>
-        ${head}
-      </head>
-      <body>
-        ${body}
-      </body>
-    </html>
-  `);
+  res.write(html);
   res.end();
 };
