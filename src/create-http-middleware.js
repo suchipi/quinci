@@ -1,9 +1,13 @@
 /* @flow */
+import type { express$Request, express$Response } from "express";
 import type { IncomingMessage, ServerResponse } from "http";
 const debug = require("debug")("quinci:http");
 const AppContext = require("./app-context");
 const webUI = require("./web-ui");
 const createWebhookHandler = require("./create-webhook-handler");
+
+export type HTTPRequest = express$Request & { appContext: AppContext };
+export type HTTPResponse = express$Response;
 
 module.exports = function createHttpMiddleware(appContext: AppContext) {
   const webhookHandler = createWebhookHandler(appContext);
@@ -11,10 +15,9 @@ module.exports = function createHttpMiddleware(appContext: AppContext) {
   return (req: IncomingMessage, res: ServerResponse) => {
     try {
       webhookHandler(req, res, () => {
-        webUI(appContext, req, res, () => {
-          res.statusCode = 400;
-          res.end("400 Bad Request");
-        });
+        // $FlowFixMe
+        req.appContext = appContext;
+        webUI(req, res);
       });
     } catch (err) {
       debug(

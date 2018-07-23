@@ -8,3 +8,4 @@ src
 .gitignore
 .prettierignore
 .prettierrc
+flow-typed

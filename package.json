@@ -7,6 +7,7 @@
   "dependencies": {
     "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
+    "express": "^4.16.3",
     "github-app": "^3.2.0",
     "github-webhook-handler": "^0.7.1",
     "promise-queue": "^2.2.5",
@@ -37,7 +38,7 @@
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-react": "^7.10.0",
     "flow-bin": "^0.72.0",
-    "memory-fs": "^0.4.1",
+    "flow-typed": "^2.5.1",
     "nodemon": "^1.17.3",
     "prettier": "^1.12.1",
     "rimraf": "^2.6.2"
