@@ -3,7 +3,7 @@ const React = require("react");
 const {
   GitCommitIcon,
   ClockIcon,
-  BeakerIcon,
+  PrimitiveDotIcon,
   CheckIcon,
   XIcon,
   CircleSlashIcon,
@@ -52,7 +52,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
     const jobStatusIconColor = {
       waiting: "rgb(119, 119, 119)",
       canceled: "rgb(119, 119, 119)",
-      running: "rgb(177, 160, 0)",
+      running: "rgb(227, 205, 0)",
       success: "rgb(0, 171, 0)",
       failure: "rgb(198, 0, 0)",
       error: "rgb(198, 0, 0)",
@@ -61,7 +61,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
     const JobStatusIcon = {
       waiting: ClockIcon,
       canceled: CircleSlashIcon,
-      running: BeakerIcon,
+      running: PrimitiveDotIcon,
       success: CheckIcon,
       failure: XIcon,
       error: XIcon,
