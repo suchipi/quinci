@@ -1,7 +1,9 @@
 /* @flow */
 const React = require("react");
+const { TriangleRightIcon } = require("react-octicons");
 const Job = require("../../job");
 const Padding = require("./Padding");
+const LabelWithIcon = require("./LabelWithIcon");
 
 type Props = {
   job: Job,
@@ -14,7 +16,13 @@ module.exports = class JobRunOutput extends React.Component<Props> {
 
     return (
       <details open={isSelected}>
-        <summary>Output</summary>
+        <summary style={{ display: "flex" }}>
+          <LabelWithIcon
+            noMargin
+            label="Output"
+            icon={<TriangleRightIcon className="details-icon" />}
+          />
+        </summary>
         <Padding top={8}>
           <pre
             style={{

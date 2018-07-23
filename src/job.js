@@ -67,6 +67,7 @@ module.exports = class Job extends EventEmitter {
   status: JobStatus;
   runResult: JobRunResult;
   createdAt: Date;
+  startedAt: ?Date;
   finishedAt: ?Date;
 
   // Call this to cancel the job.
@@ -95,6 +96,7 @@ module.exports = class Job extends EventEmitter {
       output: "",
     };
     this.createdAt = new Date();
+    this.startedAt = null;
     this.finishedAt = null;
 
     this.cancel = () => {
@@ -121,6 +123,7 @@ module.exports = class Job extends EventEmitter {
     const logFile = `${runDir}/quinci-log.txt`;
 
     shell.mkdir("-p", runDir);
+    this.startedAt = new Date();
     const child: child_process$ChildProcess = spawn(
       "sh",
       [

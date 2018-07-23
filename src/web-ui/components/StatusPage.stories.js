@@ -34,6 +34,7 @@ storiesOf("StatusPage", module).add("default", () => {
         output: "Hi this is output",
       },
       createdAt: new Date(Date.now() - 5 * 60 * 1000),
+      startedAt: new Date(Date.now() - 5 * 60 * 1000),
     })
   );
   masterQueue.add(
@@ -45,6 +46,8 @@ storiesOf("StatusPage", module).add("default", () => {
         output: "Hi this is output",
       },
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      finishedAt: new Date(Date.now() - 1.78 * 60 * 60 * 1000),
     })
   );
   masterQueue.add(
@@ -56,6 +59,8 @@ storiesOf("StatusPage", module).add("default", () => {
         output: "Process was killed (Out of memory)",
       },
       createdAt: new Date(Date.now() - 7.23 * 60 * 60 * 1000),
+      startedAt: new Date(Date.now() - 7.23 * 60 * 60 * 1000),
+      finishedAt: new Date(Date.now() - 7 * 60 * 60 * 1000),
     })
   );
   masterQueue.add(
@@ -67,6 +72,8 @@ storiesOf("StatusPage", module).add("default", () => {
         output: "",
       },
       createdAt: new Date(Date.now() - 26 * 60 * 60 * 1000),
+      startedAt: new Date(Date.now() - 25 * 60 * 60 * 1000),
+      finishedAt: new Date(Date.now() - 24.9 * 60 * 60 * 1000),
     })
   );
 

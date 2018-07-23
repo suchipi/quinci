@@ -7,10 +7,12 @@ const {
   CheckIcon,
   XIcon,
   CircleSlashIcon,
+  WatchIcon,
 } = require("react-octicons");
 const moment = require("moment");
 const Job = require("../../job");
 const Padding = require("./Padding");
+const LabelWithIcon = require("./LabelWithIcon");
 const JobRunOutput = require("./JobRunOutput");
 
 type Props = {
@@ -33,19 +35,6 @@ const Divider = () => (
 );
 
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1);
-
-const LabelWithIcon = ({
-  label,
-  icon,
-}: {
-  label: React.Node,
-  icon: React.Node,
-}) => (
-  <div style={{ display: "flex", alignItems: "center" }}>
-    {icon}
-    <Padding left={4}>{label}</Padding>
-  </div>
-);
 
 module.exports = class JobStatusItem extends React.Component<Props> {
   render() {
@@ -96,6 +85,13 @@ module.exports = class JobStatusItem extends React.Component<Props> {
     }[job.status];
 
     const createdAtRelative = capitalize(moment(job.createdAt).fromNow());
+    let runDuration = null;
+    if (job.startedAt != null) {
+      const endTime = job.finishedAt ?? new Date();
+      runDuration = capitalize(
+        moment.duration(job.startedAt - endTime).humanize()
+      );
+    }
 
     return (
       <li
@@ -110,15 +106,23 @@ module.exports = class JobStatusItem extends React.Component<Props> {
           <a href={`/?${job.uid}#job-${job.uid}`}>
             <h3>{createdAtRelative}</h3>
           </a>
-          <p style={{ margin: "8px 0" }} title="Git Commit SHA">
-            <LabelWithIcon label={job.commitSha} icon={<GitCommitIcon />} />
-          </p>
-          <p style={{ margin: "8px 0" }}>
+          <LabelWithIcon
+            title="Git Commit SHA"
+            label={job.commitSha}
+            icon={<GitCommitIcon />}
+          />
+          <LabelWithIcon
+            title="Job Status"
+            label={jobStatusLabel}
+            icon={<JobStatusIcon style={{ fill: jobStatusIconColor }} />}
+          />
+          {runDuration ? (
             <LabelWithIcon
-              label={jobStatusLabel}
-              icon={<JobStatusIcon style={{ fill: jobStatusIconColor }} />}
+              title="Run Duration"
+              label={runDuration}
+              icon={<WatchIcon />}
             />
-          </p>
+          ) : null}
 
           {job.runResult.output.trim().length > 0 ? (
             <JobRunOutput job={job} isSelected={isSelected} />

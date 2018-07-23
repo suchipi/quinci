@@ -36,6 +36,23 @@ module.exports = class Page extends React.Component<Props> {
               a:hover {
                 text-decoration: underline;
               }
+
+              summary::-webkit-details-marker {
+                display: none;
+              }
+
+              summary:first-of-type {
+                list-style-type: none;
+              }
+
+              details .details-icon {
+                transform: rotate(0deg);
+                transition: transform 100ms ease-in-out;
+              }
+
+              details[open] .details-icon {
+                transform: rotate(90deg);
+              }
             `}
           </style>
           <link
