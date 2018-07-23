@@ -11,7 +11,7 @@ const {
 const moment = require("moment");
 const Job = require("../../job");
 const Padding = require("./Padding");
-const LinkButton = require("./LinkButton");
+const JobRunOutput = require("./JobRunOutput");
 
 type Props = {
   job: Job,
@@ -78,9 +78,20 @@ module.exports = class JobStatusItem extends React.Component<Props> {
       error: XIcon,
     }[job.status];
 
+    const jobStatusLabel = {
+      waiting: "Waiting",
+      canceled: "Canceled",
+      running: (
+        <span>
+          Running - <a href={`/cancel?jobId=${job.uid}`}>Cancel</a>
+        </span>
+      ),
+      success: "Success",
+      failure: `Failure - Exit Code: ${job.runResult.code}`,
+      error: "Error",
+    }[job.status];
+
     const createdAtRelative = capitalize(moment(job.createdAt).fromNow());
-    const hasOutput = job.runResult.output.trim().length > 0;
-    const canCancel = job.status === "running";
 
     return (
       <li
@@ -91,7 +102,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
           position: "relative",
         }}
       >
-        <Padding size={8} left={16}>
+        <Padding size={16}>
           <a href={`/?${job.uid}#job-${job.uid}`}>
             <h3>{createdAtRelative}</h3>
           </a>
@@ -100,54 +111,13 @@ module.exports = class JobStatusItem extends React.Component<Props> {
           </p>
           <p style={{ margin: "8px 0" }}>
             <LabelWithIcon
-              label={`${capitalize(job.status)}${
-                job.status === "failure"
-                  ? " - Exit Code: " + job.runResult.code
-                  : ""
-              }`}
+              label={jobStatusLabel}
               icon={<JobStatusIcon style={{ fill: jobStatusIconColor }} />}
             />
           </p>
 
-          {hasOutput || canCancel ? (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "flex-end",
-              }}
-            >
-              {hasOutput ? (
-                <details
-                  open={isSelected}
-                  style={{
-                    flexGrow: 1,
-                    padding: canCancel ? "8px 0" : "",
-                  }}
-                >
-                  <summary>Output</summary>
-                  <Padding top={8}>
-                    <pre>
-                      <code>{job.runResult.output}</code>
-                    </pre>
-                  </Padding>
-                </details>
-              ) : null}
-
-              <div
-                style={{
-                  flexGrow: 0,
-                  paddingBottom: "8px",
-                }}
-              >
-                {job.status === "running" ? (
-                  <LinkButton
-                    href={`/cancel?jobId=${job.uid}`}
-                    label="Cancel Job"
-                  />
-                ) : null}
-              </div>
-            </div>
+          {job.runResult.output.trim().length > 0 ? (
+            <JobRunOutput job={job} isSelected={isSelected} />
           ) : null}
         </Padding>
         {withDivider ? <Divider /> : null}
