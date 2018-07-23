@@ -1,9 +1,12 @@
 /* @flow */
 const React = require("react");
 const { TriangleRightIcon } = require("react-octicons");
+const ansiUp = require("ansi_up").default;
 const Job = require("../../job");
 const Padding = require("./Padding");
 const LabelWithIcon = require("./LabelWithIcon");
+
+const ansiUpInstance = new ansiUp();
 
 type Props = {
   job: Job,
@@ -29,9 +32,15 @@ module.exports = class JobRunOutput extends React.Component<Props> {
               padding: "8px",
               backgroundColor: "#262626",
               color: "white",
+              overflow: "auto",
+              maxHeight: "50vh",
             }}
           >
-            <code>{job.runResult.output}</code>
+            <code
+              dangerouslySetInnerHTML={{
+                __html: ansiUpInstance.ansi_to_html(job.runResult.output),
+              }}
+            />
           </pre>
         </Padding>
       </details>
