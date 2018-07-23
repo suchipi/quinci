@@ -47,7 +47,7 @@ module.exports = class Page extends React.Component<Props> {
 
         <main
           style={{
-            maxWidth: "960px",
+            maxWidth: "800px",
             margin: "0 auto",
           }}
         >

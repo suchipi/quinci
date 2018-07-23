@@ -112,6 +112,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
             <div
               style={{
                 display: "flex",
+                alignItems: "flex-end",
               }}
             >
               {job.runResult.output.trim().length > 0 ? (
