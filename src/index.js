@@ -11,6 +11,7 @@ module.exports = function runQuinCI(config: NormalizedConfig): Promise<void> {
 
   return new Promise((resolve) => {
     const server = http.createServer(httpMiddleware);
+    // $FlowFixMe
     server.listen(config.port, resolve);
   });
 };

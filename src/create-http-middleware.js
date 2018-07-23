@@ -1,13 +1,13 @@
 /* @flow */
-import type { express$Request, express$Response } from "express";
+import type { $Request, $Response } from "express";
 import type { IncomingMessage, ServerResponse } from "http";
 const debug = require("debug")("quinci:http");
 const AppContext = require("./app-context");
 const webUI = require("./web-ui");
 const createWebhookHandler = require("./create-webhook-handler");
 
-export type HTTPRequest = express$Request & { appContext: AppContext };
-export type HTTPResponse = express$Response;
+export type HTTPRequest = $Request & { appContext: AppContext };
+export type HTTPResponse = $Response;
 
 module.exports = function createHttpMiddleware(appContext: AppContext) {
   const webhookHandler = createWebhookHandler(appContext);

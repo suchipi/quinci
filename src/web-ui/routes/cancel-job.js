@@ -11,6 +11,13 @@ module.exports = function cancelJob(req: HTTPRequest, res: HTTPResponse) {
     return;
   }
 
+  if (Array.isArray(jobId)) {
+    res.statusCode = 400;
+    res.write("Cancel job failed: Invalid jobId");
+    res.end();
+    return;
+  }
+
   const jobs = req.appContext.queues.getAllJobsByUid();
   const job = jobs[jobId];
 
