@@ -174,7 +174,7 @@ This will run quinCI in the current directory.
 
 ## Troubleshooting
 
-- quinCI will not run in response to actions from users who do not have write access to the repository, as a security measure. If a user without write access opens a PR and you want to run its tests, you can use the "comment with special phrase" trigger to run it.
+- quinCI will not run in response to actions from users who do not have write access to the repository, as a security measure. If a user without write access opens a PR and you want to run its tests, comment "quinCI test this" on the PR.
 - quinCI uses the [debug](https://www.npmjs.com/package/debug) module to log debugging information. To view debug logs while running, set the environment variable `DEBUG` to `quinci:*`.
 
 ## License
