@@ -15,7 +15,7 @@
     "promise-queue": "^2.2.5",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-helmet": "^5.2.0",
+    "react-helmet-async": "^0.1.0-alpha",
     "react-octicons": "^0.2.0",
     "shelljs": "^0.8.1",
     "signal-exit": "^3.0.2",

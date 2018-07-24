@@ -8,6 +8,9 @@ const app = express();
 
 app.get("/", statusPage);
 app.get("/cancel", cancelJob);
-app.use("/assets", express.static(path.join(__dirname, "assets")));
+app.use(
+  "/assets",
+  express.static(path.resolve(__dirname, "..", "..", "assets"))
+);
 
 module.exports = app;

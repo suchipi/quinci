@@ -2,6 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 // import { action } from "@storybook/addon-actions";
 // import { linkTo } from "@storybook/addon-links";
+const { HelmetProvider } = require("react-helmet-async");
 
 import StatusPage from "./StatusPage";
 const AppContext = require("../../app-context");
@@ -117,5 +118,9 @@ storiesOf("StatusPage", module).add("default", () => {
     })
   );
 
-  return <StatusPage appContext={appContext} />;
+  return (
+    <HelmetProvider>
+      <StatusPage appContext={appContext} />
+    </HelmetProvider>
+  );
 });

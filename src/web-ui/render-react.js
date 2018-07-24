@@ -1,11 +1,14 @@
 /* @flow */
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
-const { Helmet } = require("react-helmet");
+const { HelmetProvider } = require("react-helmet-async");
 
 module.exports = function renderReact(element: React.Element<any>): string {
-  const reactMarkup = ReactDOMServer.renderToString(element);
-  const helmet = Helmet.renderStatic();
+  const helmetContext = {};
+  const reactMarkup = ReactDOMServer.renderToString(
+    <HelmetProvider context={helmetContext}>{element}</HelmetProvider>
+  );
+  const { helmet } = helmetContext;
 
   return `
     <!DOCTYPE html>

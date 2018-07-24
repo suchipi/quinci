@@ -46,14 +46,16 @@ module.exports = class StatusPage extends React.Component<Props> {
                   padding: "0",
                 }}
               >
-                {jobs.map((job, index) => (
-                  <JobStatusItem
-                    key={job.uid}
-                    job={job}
-                    isSelected={job.uid === selectedJobUid}
-                    withDivider={jobs[index + 1] != null}
-                  />
-                ))}
+                {[...jobs]
+                  .sort((job1, job2) => job2.createdAt - job1.createdAt)
+                  .map((job, index) => (
+                    <JobStatusItem
+                      key={job.uid}
+                      job={job}
+                      isSelected={job.uid === selectedJobUid}
+                      withDivider={jobs[index + 1] != null}
+                    />
+                  ))}
               </ul>
             ) : (
               <Padding x={16} y={8}>

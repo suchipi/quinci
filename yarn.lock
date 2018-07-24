@@ -4167,7 +4167,7 @@ interpret@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.1.0.tgz#7ed1b1410c6a0e0f78cf95d3b8440c63f78b8614"
 
-invariant@^2.2.0, invariant@^2.2.2:
+invariant@^2.2.0, invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
   dependencies:
@@ -6133,14 +6133,14 @@ react-fuzzy@^0.5.2:
     fuse.js "^3.0.1"
     prop-types "^15.5.9"
 
-react-helmet@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-5.2.0.tgz#a81811df21313a6d55c5f058c4aeba5d6f3d97a7"
+react-helmet-async@^0.1.0-alpha:
+  version "0.1.0-alpha"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-0.1.0-alpha.tgz#8304d45bc3f6dc3e5a9e190f60ba2a4c2bc9944f"
   dependencies:
     deep-equal "^1.0.1"
-    object-assign "^4.1.1"
-    prop-types "^15.5.4"
-    react-side-effect "^1.1.0"
+    invariant "^2.2.4"
+    prop-types "^15.6.1"
+    shallowequal "^1.0.2"
 
 react-html-attributes@^1.4.2:
   version "1.4.2"
@@ -6181,13 +6181,6 @@ react-modal@^3.3.2:
 react-octicons@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/react-octicons/-/react-octicons-0.2.0.tgz#50cfcc6a4d3a75c2f8acf116bcbdfdd7e0b01513"
-
-react-side-effect@^1.1.0:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-1.1.5.tgz#f26059e50ed9c626d91d661b9f3c8bb38cd0ff2d"
-  dependencies:
-    exenv "^1.2.1"
-    shallowequal "^1.0.1"
 
 react-split-pane@^0.1.77:
   version "0.1.82"
@@ -6718,7 +6711,7 @@ shallowequal@^0.2.2:
   dependencies:
     lodash.keys "^3.1.2"
 
-shallowequal@^1.0.1:
+shallowequal@^1.0.2:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
 
