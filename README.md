@@ -11,6 +11,10 @@ quinCI is a good fit for you if:
 - You want to run CI when a commit is added to the `master` branch
 - You want to run CI when a pull request is opened or updated
 
+|                                                                                                                                                   |                                                                                                                                                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![quinCI's web UI, showing the status of different jobs and their run output](https://cdn.rawgit.com/suchipi/quinci/master/web-ui-screenshot.png) | ![quinCI's GitHub bot posting comments on GitHub and setting the commit status](https://cdn.rawgit.com/suchipi/quinci/master/github-screenshot.png) |
+
 <p align="center">
 <img width="30%" 
 alt="quinCI's web UI, showing the status of different jobs and their run output" src="https://cdn.rawgit.com/suchipi/quinci/master/readme-screenshot.png"/>
