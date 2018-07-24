@@ -39,7 +39,7 @@ When you push a commit to master or merge a PR into master, quinCI will run the 
 - If `./quinci/master` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the commit with information about the failure.
 - If `./quinci/master` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success".
 
-| Event                                 | Job            |
+| Event                                 | Task           |
 | ------------------------------------- | -------------- |
 | PR opened, or new commits added to PR | `pull-request` |
 
@@ -55,7 +55,7 @@ quinCI will post a comment when it starts running the task, and another comment 
 - If `./quinci/pull-request` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the PR indicating the task failed.
 - If `./quinci/pull-request` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success" and leave a comment on the PR indicating the task succeeded.
 
-| Event                                    | Job            |
+| Event                                    | Task           |
 | ---------------------------------------- | -------------- |
 | Comment with special phrase posted on PR | `pull-request` |
 
@@ -63,7 +63,7 @@ In any PR, you can leave a comment with the phrase "quinCI run" or "quinCI test"
 
 The phrase only needs to match `/quin+c[eyi]+.* (?:re)?(?:run|test)/i`, so you can write "Mr. Quincy, please test the code again, if you wouldn't mind" and it will work, too.
 
-| Event                                        | Job    |
+| Event                                        | Task   |
 | -------------------------------------------- | ------ |
 | Comment with special phrase posted on commit | varies |
 
