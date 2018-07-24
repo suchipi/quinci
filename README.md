@@ -1,4 +1,4 @@
-<p align="center"><img width="30%" src="https://cdn.rawgit.com/suchipi/quinci/master/logo/quinCI.svg"/></p>
+<p align="center"><img width="30%" alt="quinCI logo" src="https://cdn.rawgit.com/suchipi/quinci/master/logo/quinCI.svg"/></p>
 
 quinCI is a self-hosted, minimal GitHub CI server that runs scripts in response to GitHub webhook events.
 
@@ -6,10 +6,15 @@ It is an alternative to complex, monolithic CI servers like Jenkins. Instead of 
 
 quinCI is a good fit for you if:
 
-* You want to run CI on your own server
-* You use GitHub
-* You want to run CI when a commit is added to the `master` branch
-* You want to run CI when a pull request is opened or updated
+- You want to run CI on your own server
+- You use GitHub
+- You want to run CI when a commit is added to the `master` branch
+- You want to run CI when a pull request is opened or updated
+
+<p align="center">
+<img width="30%" 
+alt="quinCI's web UI, showing the status of different jobs and their run output" src="https://cdn.rawgit.com/suchipi/quinci/master/readme-screenshot.png"/>
+</p>
 
 ## How it Works
 
@@ -27,13 +32,13 @@ Here's a list of the events quinCI reacts to, and what task it will run for each
 
 When you push a commit to master or merge a PR into master, quinCI will run the `master` task on your repo. To do so, it:
 
-* Clones your repo
-* Checks out the commit you just pushed
-* Marks the commit status on GitHub as "pending"
-* Runs `./quinci/master` inside your repo
+- Clones your repo
+- Checks out the commit you just pushed
+- Marks the commit status on GitHub as "pending"
+- Runs `./quinci/master` inside your repo
 
-* If `./quinci/master` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the commit with information about the failure.
-* If `./quinci/master` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success".
+- If `./quinci/master` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the commit with information about the failure.
+- If `./quinci/master` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success".
 
 | Event                                 | Job            |
 | ------------------------------------- | -------------- |
@@ -41,15 +46,15 @@ When you push a commit to master or merge a PR into master, quinCI will run the 
 
 When you open a Pull Request or push new commits onto a PR, quinCI will run the `pull-request` task on your repo. To do so, it:
 
-* Clones your repo
-* Checks out the commit you just pushed or opened a PR for
-* Marks the commit status on GitHub as "pending"
-* Runs `./quinci/pull-request` inside your repo
+- Clones your repo
+- Checks out the commit you just pushed or opened a PR for
+- Marks the commit status on GitHub as "pending"
+- Runs `./quinci/pull-request` inside your repo
 
 quinCI will post a comment when it starts running the task, and another comment when it has finished the task, which will include the results of the build.
 
-* If `./quinci/pull-request` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the PR indicating the task failed.
-* If `./quinci/pull-request` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success" and leave a comment on the PR indicating the task succeeded.
+- If `./quinci/pull-request` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the PR indicating the task failed.
+- If `./quinci/pull-request` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success" and leave a comment on the PR indicating the task succeeded.
 
 | Event                                    | Job            |
 | ---------------------------------------- | -------------- |
@@ -103,29 +108,29 @@ chmod +x quinci/pull-request
 
 quinCI is used as a [GitHub App](https://developer.github.com/apps/). Because it's self-hosted, the webhook URL and authentication details will vary, so you need to create a custom GitHub App for your quinCI server. You can [create a new GitHub App here](https://github.com/settings/apps/new).
 
-* **Name** the app whatever you want
-* **Description** is optional
-* **Homepage URL** needs to be filled in but it doesn't matter what it is
-* **User authorization callback URL** needs to be filled in but it doesn't matter what it is
-* Leave **Setup URL** blank
-* For the **Webhook URL**, use a public URL that you will run quinCI on, eg `http://mydomain.com:7777/`. You can use [ngrok](https://ngrok.com/) to expose a URL to your local box for testing. Also, you can change this later without re-creating the GitHub App.
-* You have to have a **Webhook secret**. Generate something random. You'll need to include it when running quinCI on your server, so keep it somewhere.
+- **Name** the app whatever you want
+- **Description** is optional
+- **Homepage URL** needs to be filled in but it doesn't matter what it is
+- **User authorization callback URL** needs to be filled in but it doesn't matter what it is
+- Leave **Setup URL** blank
+- For the **Webhook URL**, use a public URL that you will run quinCI on, eg `http://mydomain.com:7777/`. You can use [ngrok](https://ngrok.com/) to expose a URL to your local box for testing. Also, you can change this later without re-creating the GitHub App.
+- You have to have a **Webhook secret**. Generate something random. You'll need to include it when running quinCI on your server, so keep it somewhere.
 
 Your app needs these permissions:
 
-* **Repository contents**: Read only
-* **Issues**: Read & write
-* **Pull requests**: Read & write
-* **Commit statuses**: Read & write
+- **Repository contents**: Read only
+- **Issues**: Read & write
+- **Pull requests**: Read & write
+- **Commit statuses**: Read & write
 
 Everything else can be "No access".
 
 Subscribe to these events:
 
-* **Commit comment**
-* **Push**
-* **Issue comment**
-* **Pull request**
+- **Commit comment**
+- **Push**
+- **Issue comment**
+- **Pull request**
 
 You don't need to subscribe to anything else.
 
@@ -143,11 +148,11 @@ Go to your App's page in [GitHub Developer settings](https://github.com/settings
 
 ### Run quinCI on your server
 
-* You need [Node.js](https://nodejs.org/en/) 8.11.1 or higher to run quinCI.
-* Install the quinCI client on your server: `npm i -g quinci`
-* Copy the `.pem` private key you downloaded earlier somewhere on your server
-* Make a text file and put your webhook secret in it, and put this file somewhere on your server
-* Run `quinci` with the following command line switches:
+- You need [Node.js](https://nodejs.org/en/) 8.11.1 or higher to run quinCI.
+- Install the quinCI client on your server: `npm i -g quinci`
+- Copy the `.pem` private key you downloaded earlier somewhere on your server
+- Make a text file and put your webhook secret in it, and put this file somewhere on your server
+- Run `quinci` with the following command line switches:
 
 ```
 Options:
@@ -170,8 +175,8 @@ This will run quinCI in the current directory.
 
 ## Troubleshooting
 
-* quinCI will not run in response to actions from users who do not have write access to the repository, as a security measure. If a user without write access opens a PR and you want to run its tests, you can use the "comment with special phrase" trigger to run it.
-* quinCI uses the [debug](https://www.npmjs.com/package/debug) module to log debugging information. To view debug logs while running, set the environment variable `DEBUG` to `quinci:*`.
+- quinCI will not run in response to actions from users who do not have write access to the repository, as a security measure. If a user without write access opens a PR and you want to run its tests, you can use the "comment with special phrase" trigger to run it.
+- quinCI uses the [debug](https://www.npmjs.com/package/debug) module to log debugging information. To view debug logs while running, set the environment variable `DEBUG` to `quinci:*`.
 
 ## License
 
