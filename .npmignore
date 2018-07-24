@@ -4,8 +4,12 @@ yarn-error.log
 src
 .babelrc
 .eslintrc
+.eslintignore
 .flowconfig
 .gitignore
 .prettierignore
 .prettierrc
 flow-typed
+.storybook
+github-screenshot.png
+web-ui-screenshot.png 
