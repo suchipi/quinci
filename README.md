@@ -15,11 +15,6 @@ quinCI is a good fit for you if:
 | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![quinCI's web UI, showing the status of different jobs and their run output](https://cdn.rawgit.com/suchipi/quinci/master/web-ui-screenshot.png) | ![quinCI's GitHub bot posting comments on GitHub and setting the commit status](https://cdn.rawgit.com/suchipi/quinci/master/github-screenshot.png) |
 
-<p align="center">
-<img width="30%" 
-alt="quinCI's web UI, showing the status of different jobs and their run output" src="https://cdn.rawgit.com/suchipi/quinci/master/readme-screenshot.png"/>
-</p>
-
 ## How it Works
 
 quinCI runs "tasks" when certain "events" occur. A task is an executable file that lives in your repo in the `quinci` folder. An event is something that can happen on GitHub, like a commit being added to master, or a Pull Request being opened.
