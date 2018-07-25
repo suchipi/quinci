@@ -84,7 +84,9 @@ quinCI expects to find two executable files in your repo: `quinci/master` and `q
 The scripts can do whatever you want. Here's an example `quinci/master` script that runs tests and then deploys the code:
 
 ```sh
-#!/bin/sh
+#!/usr/bin/env bash
+set -e
+
 yarn test
 yarn deploy
 ```
@@ -92,7 +94,9 @@ yarn deploy
 And here's an example `qunci/pull-request` script that just runs the tests (without deploying):
 
 ```sh
-#!/bin/sh
+#!/usr/bin/env bash
+set -e
+
 yarn test
 ```
 
