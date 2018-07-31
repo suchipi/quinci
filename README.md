@@ -166,12 +166,13 @@ Options:
   --app-cert             Path to the GitHub App's private key pem file          [required]
   --webhook-secret-file  Path to a text file containing your Webhook secret     [required]
   --queue-concurrency    How many instances of a job are allowed to run at once [default: "master=1,pull-request=3"]
+  --web-url              URL at which the web UI can be accessed                [required]
 ```
 
 So for example:
 
 ```sh
-quinci --port 8080 --app-id 12345 --app-cert secrets/quinci.private-key.pem --webhook-secret-file secrets/webhook-secret.txt
+quinci --port 8080 --app-id 12345 --app-cert secrets/quinci.private-key.pem --webhook-secret-file secrets/webhook-secret.txt --web-url http://example.com:8080
 ```
 
 This will run quinCI in the current directory.
