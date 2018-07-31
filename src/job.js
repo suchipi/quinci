@@ -69,6 +69,7 @@ module.exports = class Job extends EventEmitter {
   createdAt: Date;
   startedAt: ?Date;
   finishedAt: ?Date;
+  +error: ?Error;
 
   // Call this to cancel the job.
   cancel: () => void;
@@ -98,6 +99,7 @@ module.exports = class Job extends EventEmitter {
     this.createdAt = new Date();
     this.startedAt = null;
     this.finishedAt = null;
+    this.error = null;
 
     this.cancel = () => {
       this._canceled = true;
@@ -178,6 +180,8 @@ module.exports = class Job extends EventEmitter {
       });
 
       child.on("error", (err) => {
+        // $FlowFixMe
+        this.error = err;
         if (this._canceled) {
           return;
         }

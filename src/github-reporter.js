@@ -1,6 +1,9 @@
 /* @flow */
 import type { GithubApp } from "./create-github-app";
 const commentTemplates = require("./comment-templates");
+const Job = require("./job");
+const AppContext = require("./app-context");
+const routeHelpers = require("./web-ui/route-helpers");
 
 type ResultStatus =
   | "waiting"
@@ -10,55 +13,34 @@ type ResultStatus =
   | "error"
   | "canceled";
 
-type CommentArg =
-  | {|
-      status: "waiting",
-    |}
-  | {|
-      status: "running",
-    |}
-  | {|
-      status: "success",
-      output: string,
-    |}
-  | {|
-      status: "failure",
-      output: string,
-      code: number,
-    |}
-  | {|
-      status: "error",
-      error: Error,
-    |}
-  | {|
-      status: "canceled",
-    |};
-
 module.exports = class GithubReporter {
+  appContext: AppContext;
   githubApp: GithubApp;
   installationId: string;
   owner: string;
   repo: string;
   sha: string;
   number: ?string;
-  taskName: string;
+  job: Job;
 
   constructor({
+    appContext,
     githubApp,
     installationId,
     owner,
     repo,
     sha,
     number,
-    taskName,
+    job,
   }: {
+    appContext: AppContext,
     githubApp: GithubApp,
     installationId: string,
     owner: string,
     repo: string,
     sha: string,
     number?: ?string,
-    taskName: string,
+    job: Job,
   }) {
     this.githubApp = githubApp;
     this.installationId = installationId;
@@ -66,11 +48,19 @@ module.exports = class GithubReporter {
     this.repo = repo;
     this.sha = sha;
     this.number = number;
-    this.taskName = taskName;
+    this.job = job;
   }
 
   async setStatus(status: ResultStatus): Promise<mixed> {
-    const { githubApp, installationId, owner, repo, sha, taskName } = this;
+    const {
+      appContext,
+      githubApp,
+      installationId,
+      owner,
+      repo,
+      sha,
+      job,
+    } = this;
 
     const stateForStatus = {
       waiting: "pending",
@@ -81,12 +71,12 @@ module.exports = class GithubReporter {
       canceled: "failure",
     }[status];
     const descriptionForStatus = {
-      waiting: `quinCI - '${taskName}' waiting in queue`,
-      running: `quinCI - '${taskName}' running`,
-      success: `quinCI - '${taskName}' ran successfully`,
-      failure: `quinCI - '${taskName}' failed`,
-      error: `quinCI - '${taskName}' errored`,
-      canceled: `quinCI - '${taskName}' was canceled`,
+      waiting: `quinCI - '${job.taskName}' waiting in queue`,
+      running: `quinCI - '${job.taskName}' running`,
+      success: `quinCI - '${job.taskName}' ran successfully`,
+      failure: `quinCI - '${job.taskName}' failed`,
+      error: `quinCI - '${job.taskName}' errored`,
+      canceled: `quinCI - '${job.taskName}' was canceled`,
     }[status];
 
     if (stateForStatus == null || descriptionForStatus == null) {
@@ -100,42 +90,23 @@ module.exports = class GithubReporter {
       sha,
       state: stateForStatus,
       description: descriptionForStatus,
-      context: `quinci:${taskName}`,
+      context: `quinci:${job.taskName}`,
+      target_url: routeHelpers.urlFor.jobStatus(appContext.config, job),
     });
   }
 
-  _commentContent(input: CommentArg): string {
-    const { taskName } = this;
-
-    switch (input.status) {
-      case "waiting": {
-        return commentTemplates.waiting(taskName);
-      }
-      case "running": {
-        return commentTemplates.running(taskName);
-      }
-      case "success": {
-        return commentTemplates.success(taskName, input.output);
-      }
-      case "failure": {
-        return commentTemplates.failure(taskName, input.output, input.code);
-      }
-      case "error": {
-        return commentTemplates.error(taskName, input.error);
-      }
-      case "canceled": {
-        return commentTemplates.canceled(taskName);
-      }
-      default: {
-        (input.status: empty);
-        throw new Error("Invalid status provided: " + input.status);
-      }
+  _commentContent(result: ResultStatus, error?: Error): string {
+    const { job } = this;
+    if (result === "error") {
+      return commentTemplates.error(job.taskName, error || job.error);
+    } else {
+      return commentTemplates[result](job);
     }
   }
 
-  async commitComment(input: CommentArg): Promise<mixed> {
+  async commitComment(result: ResultStatus, error?: Error): Promise<mixed> {
     const { githubApp, installationId, owner, repo, sha } = this;
-    const body = this._commentContent(input);
+    const body = this._commentContent(result, error);
     const github = await githubApp.asInstallation(installationId);
     await github.repos.createCommitComment({
       owner,
@@ -145,9 +116,9 @@ module.exports = class GithubReporter {
     });
   }
 
-  async issueComment(input: CommentArg): Promise<mixed> {
+  async issueComment(result: ResultStatus, error?: Error): Promise<mixed> {
     const { githubApp, installationId, owner, repo, number } = this;
-    const body = this._commentContent(input);
+    const body = this._commentContent(result, error);
     const github = await githubApp.asInstallation(installationId);
     await github.issues.createComment({
       owner,

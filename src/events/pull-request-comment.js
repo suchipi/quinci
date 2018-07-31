@@ -65,14 +65,21 @@ module.exports = (function setupEvent({
         return;
       }
 
+      const job = new Job({
+        taskName,
+        commitSha: sha,
+        remote: prResponse.data.head.repo.ssh_url,
+      });
+
       reporter = new GithubReporter({
+        appContext,
         githubApp,
         installationId: payload.installation.id,
         owner,
         repo,
         sha,
         number,
-        taskName,
+        job,
       });
 
       const queue = queues.getQueueForTaskName(taskName);
@@ -89,14 +96,8 @@ module.exports = (function setupEvent({
         await reporter.setStatus("waiting");
 
         log("Posting waiting comment");
-        await reporter.issueComment({ status: "waiting" });
+        await reporter.issueComment("waiting");
       }
-
-      const job = new Job({
-        taskName,
-        commitSha: sha,
-        remote: prResponse.data.head.repo.ssh_url,
-      });
 
       job.on("running", async () => {
         log(`Running job for '${taskName}'`);
@@ -104,7 +105,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("running");
 
         log("Posting running comment");
-        await reporter.issueComment({ status: "running" });
+        await reporter.issueComment("running");
       });
 
       job.on("success", async () => {
@@ -113,10 +114,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("success");
 
         log("Posting success comment");
-        await reporter.issueComment({
-          status: "success",
-          output: job.runResult.output,
-        });
+        await reporter.issueComment("success");
       });
 
       job.on("failure", async () => {
@@ -125,11 +123,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("failure");
 
         log("Posting failure comment");
-        await reporter.issueComment({
-          status: "failure",
-          output: job.runResult.output,
-          code: job.runResult.code,
-        });
+        await reporter.issueComment("failure");
       });
 
       job.on("error", async (error) => {
@@ -138,7 +132,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("error");
 
         log("Posting error comment");
-        await reporter.issueComment({ status: "error", error });
+        await reporter.issueComment("error", error);
       });
 
       job.on("canceled", async () => {
@@ -147,7 +141,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("canceled");
 
         log("Posting canceled comment");
-        await reporter.issueComment({ status: "canceled" });
+        await reporter.issueComment("canceled");
       });
 
       const { code } = await queue.add(job);
@@ -166,7 +160,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("error");
 
         log("Posting error comment");
-        await reporter.issueComment({ status: "error", error });
+        await reporter.issueComment("error", error);
       } else {
         log("Could not set status and post comment because reporter was null.");
       }

@@ -5,6 +5,7 @@ export type InputConfig = {
   webhookSecretFile: string,
   port: number,
   queueConcurrency: ?(string | { [taskName: string]: number }),
+  ["webURL" | "webUrl"]: string,
 };
 
 export type NormalizedConfig = {|
@@ -13,6 +14,7 @@ export type NormalizedConfig = {|
   webhookSecretFile: string,
   port: number,
   queueConcurrency: { [taskName: string]: number },
+  webURL: string,
 |};
 
 function invalidFormatError() {
@@ -72,5 +74,6 @@ module.exports = function normalizeConfig(
     webhookSecretFile: config.webhookSecretFile,
     port: config.port,
     queueConcurrency,
+    webURL: config.webURL || config.webUrl,
   };
 };

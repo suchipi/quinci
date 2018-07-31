@@ -17,6 +17,13 @@ module.exports = class JobRunOutput extends React.Component<Props> {
   render() {
     const { job, isSelected } = this.props;
 
+    const hasContent = Boolean(
+      isSelected || job.runResult.output.trim().length > 0 || job.error
+    );
+    if (!hasContent) {
+      return null;
+    }
+
     return (
       <details open={isSelected}>
         <summary style={{ display: "flex" }}>
@@ -36,11 +43,17 @@ module.exports = class JobRunOutput extends React.Component<Props> {
               maxHeight: "50vh",
             }}
           >
-            <code
-              dangerouslySetInnerHTML={{
-                __html: ansiUpInstance.ansi_to_html(job.runResult.output),
-              }}
-            />
+            {job.error ? (
+              <code style={{ color: "red" }}>{job.error.stack}</code>
+            ) : job.runResult.output.trim().length > 0 ? (
+              <code
+                dangerouslySetInnerHTML={{
+                  __html: ansiUpInstance.ansi_to_html(job.runResult.output),
+                }}
+              />
+            ) : (
+              <code>{"(No output yet)"}</code>
+            )}
           </pre>
         </Padding>
       </details>

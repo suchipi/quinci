@@ -18,7 +18,16 @@ const argv = require("yargs")
     describe: "How many instances of a job are allowed to run at once",
     default: "master=1,pull-request=3",
   })
-  .demandOption(["port", "app-id", "app-cert", "webhook-secret-file"]).argv;
+  .option("web-url", {
+    describe: "URL at which the web UI can be accessed",
+  })
+  .demandOption([
+    "port",
+    "app-id",
+    "app-cert",
+    "webhook-secret-file",
+    "web-url",
+  ]).argv;
 
 const debug = require("debug")("quinci:cli");
 const normalizeConfig = require("./normalize-config");

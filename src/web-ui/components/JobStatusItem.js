@@ -14,6 +14,7 @@ const Job = require("../../job");
 const Padding = require("./Padding");
 const LabelWithIcon = require("./LabelWithIcon");
 const JobRunOutput = require("./JobRunOutput");
+const routeHelpers = require("../route-helpers");
 
 type Props = {
   job: Job,
@@ -70,13 +71,13 @@ module.exports = class JobStatusItem extends React.Component<Props> {
     const jobStatusLabel = {
       waiting: (
         <span>
-          Waiting - <a href={`/cancel?jobId=${job.uid}`}>Cancel</a>
+          Waiting - <a href={routeHelpers.pathFor.cancelJob(job)}>Cancel</a>
         </span>
       ),
       canceled: "Canceled",
       running: (
         <span>
-          Running - <a href={`/cancel?jobId=${job.uid}`}>Cancel</a>
+          Running - <a href={routeHelpers.pathFor.cancelJob(job)}>Cancel</a>
         </span>
       ),
       success: "Success",
@@ -103,7 +104,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
         }}
       >
         <Padding size={16}>
-          <a href={`/?${job.uid}#job-${job.uid}`}>
+          <a href={routeHelpers.pathFor.jobStatus(job)}>
             <h3>{createdAtRelative}</h3>
           </a>
           <LabelWithIcon
@@ -124,9 +125,7 @@ module.exports = class JobStatusItem extends React.Component<Props> {
             />
           ) : null}
 
-          {job.runResult.output.trim().length > 0 ? (
-            <JobRunOutput job={job} isSelected={isSelected} />
-          ) : null}
+          <JobRunOutput job={job} isSelected={isSelected} />
         </Padding>
         {withDivider ? <Divider /> : null}
       </li>

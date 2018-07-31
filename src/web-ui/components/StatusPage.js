@@ -5,6 +5,7 @@ const Page = require("./Page");
 const JobStatusItem = require("./JobStatusItem");
 const Material = require("./Material");
 const Padding = require("./Padding");
+const routeHelpers = require("../route-helpers");
 
 type Props = {
   appContext: AppContext,
@@ -22,7 +23,7 @@ module.exports = class StatusPage extends React.Component<Props> {
             tagName="a"
             elevation={3}
             key={taskName}
-            href={`/#queue-${taskName}`}
+            href={routeHelpers.pathFor.queue(taskName)}
             style={{
               padding: 8,
               margin: "0px 0px 8px 8px",
@@ -43,7 +44,7 @@ module.exports = class StatusPage extends React.Component<Props> {
             }}
           >
             <a
-              href={`/#queue-${taskName}`}
+              href={routeHelpers.pathFor.queue(taskName)}
               style={{
                 backgroundColor: "#f44336",
                 color: "white",

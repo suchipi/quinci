@@ -30,13 +30,20 @@ module.exports = (function setupEvent({
         return;
       }
 
-      const reporter = new GithubReporter({
+      const job = new Job({
+        taskName,
+        commitSha: sha,
+        remote: payload.repository.ssh_url,
+      });
+
+      reporter = new GithubReporter({
+        appContext,
         githubApp,
         installationId: payload.installation.id,
         owner,
         repo,
         sha,
-        taskName,
+        job,
       });
 
       const queue = queues.getQueueForTaskName(taskName);
@@ -52,12 +59,6 @@ module.exports = (function setupEvent({
         log("Setting status to waiting");
         await reporter.setStatus("waiting");
       }
-
-      const job = new Job({
-        taskName,
-        commitSha: sha,
-        remote: payload.repository.ssh_url,
-      });
 
       job.on("running", async () => {
         log(`Running job for '${taskName}'`);
@@ -77,11 +78,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("failure");
 
         log("Posting failure comment");
-        await reporter.commitComment({
-          status: "failure",
-          output: job.runResult.output,
-          code: job.runResult.code,
-        });
+        await reporter.commitComment("failure");
       });
 
       job.on("error", async (error) => {
@@ -90,7 +87,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("error");
 
         log("Posting error comment");
-        await reporter.commitComment({ status: "error", error });
+        await reporter.commitComment("error", error);
       });
 
       job.on("canceled", async () => {
@@ -99,7 +96,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("canceled");
 
         log("Posting canceled comment");
-        await reporter.commitComment({ status: "canceled" });
+        await reporter.commitComment("canceled");
       });
 
       const { code } = await queue.add(job);
@@ -118,7 +115,7 @@ module.exports = (function setupEvent({
         await reporter.setStatus("error");
 
         log("Posting error comment");
-        await reporter.commitComment({ status: "error", error });
+        await reporter.commitComment("error", error);
       } else {
         log("Could not set status and post comment because reporter was null.");
       }

@@ -112,6 +112,7 @@ storiesOf("StatusPage", module).add("default", () => {
         code: -1,
         output: "",
       },
+      error: new Error("storybook demo error"),
       createdAt: new Date(Date.now() - 26 * 60 * 60 * 1000),
       startedAt: new Date(Date.now() - 25 * 60 * 60 * 1000),
       finishedAt: new Date(Date.now() - 24.9 * 60 * 60 * 1000),
