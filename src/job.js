@@ -156,6 +156,7 @@ module.exports = class Job extends EventEmitter {
       this.cancel = () => {
         this._canceled = true;
         child.kill("SIGKILL");
+        shell.rm("-rf", jobDir);
         this._setStatus("canceled");
         resolve(this.runResult);
       };
