@@ -17,6 +17,21 @@ module.exports = class StatusPage extends React.Component<Props> {
 
     return (
       <Page title="quinCI Status">
+        {appContext.queues.getAllQueues().map(([taskName, _]) => (
+          <Material
+            tagName="a"
+            elevation={3}
+            key={taskName}
+            href={`/#queue-${taskName}`}
+            style={{
+              padding: 8,
+              margin: "0px 0px 8px 8px",
+              display: "inline-block",
+            }}
+          >
+            {taskName}
+          </Material>
+        ))}
         {appContext.queues.getAllJobsForQueues().map(({ taskName, jobs }) => (
           <Material
             tagName="article"

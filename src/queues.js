@@ -28,6 +28,10 @@ module.exports = class Queues {
     }
   }
 
+  getAllQueues(): Array<[string, Queue]> {
+    return Array.from(this._queuesMap);
+  }
+
   getAllJobsForQueues(): Array<{ taskName: string, jobs: Array<Job> }> {
     return Array.from(this._queuesMap).map(([taskName, queue]) => ({
       taskName,
