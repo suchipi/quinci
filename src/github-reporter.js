@@ -42,6 +42,7 @@ module.exports = class GithubReporter {
     number?: ?string,
     job: Job,
   }) {
+    this.appContext = appContext;
     this.githubApp = githubApp;
     this.installationId = installationId;
     this.owner = owner;
