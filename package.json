@@ -1,7 +1,7 @@
 {
   "name": "quinci",
   "description": "Self-hosted, minimal GitHub CI server",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "bin": "dist/cli.js",
   "main": "dist/index.js",
   "license": "MIT",
