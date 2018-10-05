@@ -113,6 +113,22 @@ module.exports = class Job extends EventEmitter {
     this.emit(newStatus, maybeError);
   }
 
+  on(event: string, callback: Function) {
+    super.on(event, async () => {
+      try {
+        await callback();
+      } catch (error) {
+        console.error(
+          `Error thrown from job event handler for '${event}': ${
+            error && error.stack ? error.stack : error
+          }`
+        );
+      }
+    });
+    // $FlowFixMe: Doesn't like this and I dunno why and I don't care why
+    return this;
+  }
+
   run(): Promise<JobRunResult> {
     if (this._canceled) {
       return Promise.resolve(this.runResult);

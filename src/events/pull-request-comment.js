@@ -127,7 +127,11 @@ module.exports = (function setupEvent({
       });
 
       job.on("error", async (error) => {
-        log(`Job for '${taskName}' errored: ${error.stack}`);
+        log(
+          `Job for '${taskName}' errored: ${
+            error && error.stack ? error.stack : error
+          }`
+        );
         log("Setting status to error");
         await reporter.setStatus("error");
 
