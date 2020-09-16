@@ -1,7 +1,7 @@
 {
   "name": "quinci",
   "description": "Self-hosted, minimal GitHub CI server",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "bin": "dist/cli.js",
   "main": "dist/index.js",
   "license": "MIT",
@@ -29,7 +29,7 @@
     "cross-spawn": "^6.0.5",
     "debug": "^3.1.0",
     "express": "^4.16.3",
-    "github-app": "^3.2.0",
+    "github-app": "^4.0.1",
     "github-webhook-handler": "^0.7.1",
     "moment": "^2.22.2",
     "promise-queue": "^2.2.5",
