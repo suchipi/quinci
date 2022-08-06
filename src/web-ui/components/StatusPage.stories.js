@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import { storiesOf } from "@storybook/react";
 // import { action } from "@storybook/addon-actions";
@@ -6,7 +7,7 @@ const { HelmetProvider } = require("react-helmet-async");
 
 import StatusPage from "./StatusPage";
 const AppContext = require("../../app-context");
-const Job = require("../../job");
+const Job: any = require("../../job");
 
 storiesOf("StatusPage", module).add("default", () => {
   const appContext = new AppContext({
@@ -16,8 +17,11 @@ storiesOf("StatusPage", module).add("default", () => {
     port: 8080,
     queueConcurrency: {
       master: 1,
+      main: 1,
       "pull-request": 3,
     },
+    webURL: "/",
+    namedBranches: ["master", "main", "dev"],
   });
 
   const masterQueue = appContext.queues.getQueueForTaskName("master");
@@ -121,7 +125,7 @@ storiesOf("StatusPage", module).add("default", () => {
 
   return (
     <HelmetProvider>
-      <StatusPage appContext={appContext} />
+      <StatusPage appContext={appContext} selectedJobUid={null} />
     </HelmetProvider>
   );
 });

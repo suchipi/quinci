@@ -25,19 +25,23 @@ You can view all the jobs quinCI is running or has run recently by opening the p
 
 Here's a list of the events quinCI reacts to, and what task it will run for each event:
 
-| Event                                  | Task     |
-| -------------------------------------- | -------- |
-| Commit pushed to or merged into master | `master` |
+| Event                                          | Task                                           |
+| ---------------------------------------------- | ---------------------------------------------- |
+| Commit pushed to or merged into a named branch | matches the branch name, eg `main` or `master` |
 
-When you push a commit to master or merge a PR into master, quinCI will run the `master` task on your repo. To do so, it:
+When you push a commit to master/main, or merge a PR into master/main, quinCI will run the `master` or `main` task on your repo. To do so, it:
 
 - Clones your repo
 - Checks out the commit you just pushed
 - Marks the commit status on GitHub as "pending"
-- Runs `./quinci/master` inside your repo
+- Runs `./quinci/master` or `./quinci/main` inside your repo (depending on the name of the branch that got new commits)
 
-- If `./quinci/master` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the commit with information about the failure.
-- If `./quinci/master` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success".
+- If `./quinci/master` or `./quinci/main` exits with a nonzero status code, quinCI will mark the commit status on GitHub as "failure" and leave a comment on the commit with information about the failure.
+- If `./quinci/master` or `./quinci/main` exits with a status code of zero, quinCI will mark the commit status on GitHub as "success".
+
+To run tasks for branches with different names, pass a comma-separated list of branch names on the command line using the `--named-branches` CLI flag. The default value of `--named-branches` is `master,main`. When you specify named branches using this CLI flag, it replaces the default value. So, if you want to include the default `master` and `main` tasks, you will need to include them, eg `--named-branches master,main,staging,production`.
+
+> Note: When adding a task for a named branch, you may wish to also use `--queue-concurrency` to specify how many jobs can run concurrently for that task. If unspecified, the concurrency defaults to 1, meaning only one job can be running for that task at a time, and other jobs will wait until a running job has completed.
 
 | Event                                 | Task           |
 | ------------------------------------- | -------------- |
@@ -67,19 +71,23 @@ The phrase only needs to match `/quin+c[eyi]+.* (?:re)?(?:run|test)/i`, so you c
 | -------------------------------------------- | ------ |
 | Comment with special phrase posted on commit | varies |
 
-On any commit, you can leave a comment with the phrase "quinCI run master" or "quinCI run pull-request" to run the `master` or `pull-request` tasks on that commit.
+On any commit, you can leave a comment with the phrase "quinCI run master", "quinCI run main", or "quinCI run pull-request" to run the `master`, `main`, or `pull-request` tasks on that commit.
 
 The phrase only needs to match `/quin+c[eyi]+.* run ([\w.-]+)/i`, so you can write "Quinncey, could you please run master" and it will work, too.
 
 You can also use this to run custom tasks; for example, if you create the file `quinci/deploy` in your repo, you can comment "quinCI run deploy" on a commit, and quinCI will clone the repo, check out the commit, and run `./quinci/deploy`.
 
+> Note: When creating a custom task, you may wish to also use `--queue-concurrency` to specify how many jobs can run concurrently for that task. If unspecified, the concurrency defaults to Infinity, meaning as many jobs as are requested can be running for that task at a time.
+
 ## Installation and Setup
 
 ### Create tasks for quinCI to run
 
-quinCI expects to find two executable files in your repo: `quinci/master` and `quinci/pull-request`. Create these in your repo before installing quinCI, or else your builds will fail.
+quinCI expects to find two executable files in your repo: `quinci/master` (or `quinci/main`), and `quinci/pull-request`. Create these in your repo before installing quinCI, or else your builds will fail.
 
-`quinci/master` will be run for every commit added to master, and `quinci/pull-request` will be run for every pull request.
+`quinci/master` will be run for every commit added to master, `quinci/main` will be run for every commit added to main, and `quinci/pull-request` will be run for every pull request.
+
+If you override the `--named-branches` setting via the CLI in such a way that `master` and/or `main` are no longer present, you don't need to have executable files at `quinci/master` or `quinci/main`.
 
 The scripts can do whatever you want. Here's an example `quinci/master` script that runs tests and then deploys the code:
 
@@ -159,14 +167,19 @@ Go to your App's page in [GitHub Developer settings](https://github.com/settings
 
 ```
 Options:
-  --help                 Show help                                              [boolean]
-  --version              Show version number                                    [boolean]
-  --port                 Port to run the HTTP server on                         [required] [default: 7777]
-  --app-id               GitHub App ID                                          [required]
-  --app-cert             Path to the GitHub App's private key pem file          [required]
-  --webhook-secret-file  Path to a text file containing your Webhook secret     [required]
-  --queue-concurrency    How many instances of a job are allowed to run at once [default: "master=1,pull-request=3"]
-  --web-url              URL at which the web UI can be accessed                [required]
+  --help                 Show help                                               [boolean]
+  --version              Show version number                                     [boolean]
+  --port                 Port to run the HTTP server on                          [required] [default: 7777]
+  --app-id               GitHub App ID                                           [required]
+  --app-cert             Path to the GitHub App's private key pem file           [required]
+  --webhook-secret-file  Path to a text file containing your Webhook secret      [required]
+  --queue-concurrency    How many instances of a job are allowed to run at once.
+                         Use 'Infinity' for no limit.                            [default: "master=1,main=1,pull-request=3"]
+  --web-url              URL at which the web UI can be accessed                 [required]
+  --named-branches       Comma-separated list of branch names that have
+                         corresponding jobs in the 'quinci' folder in the repo
+                         root, that should be run when commits are pushed to
+                         that branch.                                            [default: "master,main"]
 ```
 
 So for example:

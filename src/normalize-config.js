@@ -6,6 +6,7 @@ export type InputConfig = {
   port: number,
   queueConcurrency: ?(string | { [taskName: string]: number }),
   ["webURL" | "webUrl"]: string,
+  namedBranches: string | Array<string>,
 };
 
 export type NormalizedConfig = {|
@@ -15,6 +16,7 @@ export type NormalizedConfig = {|
   port: number,
   queueConcurrency: { [taskName: string]: number },
   webURL: string,
+  namedBranches: Array<string>,
 |};
 
 function invalidFormatError() {
@@ -25,6 +27,7 @@ function invalidFormatError() {
 
 const defaultQueueConcurrency = {
   master: 1,
+  main: 1,
   "pull-request": 3,
 };
 
@@ -55,6 +58,8 @@ function parseQueueConcurrencyString(configStr: string) {
   return queueConcurrencyObject;
 }
 
+const defaultNamedBranches = ["master", "main"];
+
 module.exports = function normalizeConfig(
   config: InputConfig
 ): NormalizedConfig {
@@ -68,6 +73,13 @@ module.exports = function normalizeConfig(
     queueConcurrency = config.queueConcurrency;
   }
 
+  let namedBranches = defaultNamedBranches;
+  if (typeof config.namedBranches === "string") {
+    namedBranches = config.namedBranches.split(",");
+  } else if (Array.isArray(config.namedBranches)) {
+    namedBranches = config.namedBranches;
+  }
+
   return {
     appId: config.appId,
     appCert: config.appCert,
@@ -75,5 +87,6 @@ module.exports = function normalizeConfig(
     port: config.port,
     queueConcurrency,
     webURL: config.webURL || config.webUrl,
+    namedBranches,
   };
 };

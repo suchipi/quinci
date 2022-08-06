@@ -15,11 +15,17 @@ const argv = require("yargs")
     describe: "Path to a text file containing your Webhook secret",
   })
   .option("queue-concurrency", {
-    describe: "How many instances of a job are allowed to run at once",
-    default: "master=1,pull-request=3",
+    describe:
+      "How many instances of a job are allowed to run at once. Use 'Infinity' for no limit.",
+    default: "master=1,main=1,pull-request=3",
   })
   .option("web-url", {
     describe: "URL at which the web UI can be accessed",
+  })
+  .option("named-branches", {
+    describe:
+      "Comma-separated list of branch names that have corresponding jobs in the 'quinci' folder in the repo root, that should be run when commits are pushed to that branch.",
+    default: "master,main",
   })
   .demandOption([
     "port",
@@ -31,13 +37,13 @@ const argv = require("yargs")
 
 const debug = require("debug")("quinci:cli");
 const normalizeConfig = require("./normalize-config");
-const runDumbCI = require("./index");
+const runQuinCI = require("./index");
 
 const config = normalizeConfig(argv);
 
 debug("Config: " + JSON.stringify(config, null, 2));
 
-runDumbCI(config).then(() => {
+runQuinCI(config).then(() => {
   const version = require("../package.json").version;
   console.log(`quinCI ${version} is running`);
 });

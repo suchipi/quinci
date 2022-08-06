@@ -72,7 +72,7 @@
   "scripts": {
     "build": "rimraf dist/* && babel src --out-dir dist",
     "build:watch": "babel --watch src --out-dir dist",
-    "start": "nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt --web-url http://example.com",
+    "start": "env DEBUG='quinci:*' nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt --web-url http://example.com",
     "storybook": "start-storybook -p 6006 -s ./.storybook/public",
     "build-storybook": "build-storybook"
   }

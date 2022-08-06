@@ -49,10 +49,10 @@ module.exports = function createWebhookHandler(
       loggerName: "pull-request",
       setupEvent: require("./events/pull-request"),
     },
-    {
-      loggerName: "push-to-master",
-      setupEvent: require("./events/push-to-master"),
-    },
+    ...appContext.config.namedBranches.map((branchName) => ({
+      loggerName: `push-to-${branchName}`,
+      setupEvent: require("./events/push-to-named-branch")(branchName),
+    })),
   ].forEach(({ loggerName, setupEvent }) => {
     const debug = makeDebug(`quinci:${loggerName}`);
     const makeLogger = (prefix) => (msg) => debug(`${prefix}${msg}`);
