@@ -1,7 +1,7 @@
 {
   "name": "quinci",
   "description": "Self-hosted, minimal GitHub CI server",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "bin": "dist/cli.js",
   "main": "dist/index.js",
   "license": "MIT",
@@ -70,7 +70,7 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "build": "rimraf dist/* && babel src --out-dir dist",
+    "build": "rimraf dist/* && babel src --out-dir dist && chmod +x dist/cli.js",
     "build:watch": "babel --watch src --out-dir dist",
     "start": "env DEBUG='quinci:*' nodemon --watch ./dist dist/cli.js -- --app-id 12403 --app-cert secrets/quinci.pem --webhook-secret-file secrets/webhook-secret.txt --web-url http://example.com",
     "storybook": "start-storybook -p 6006 -s ./.storybook/public",
