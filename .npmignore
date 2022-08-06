@@ -13,3 +13,5 @@ flow-typed
 .storybook
 github-screenshot.png
 web-ui-screenshot.png 
+.vscode
+logo
